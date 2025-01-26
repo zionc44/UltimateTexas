@@ -1,0 +1,47 @@
+/* You can add global styles to this file, and also import other style files */
+html,
+body {
+    margin: 0;
+    height: 100%;
+    width: 100%;
+    min-height: 100%;
+    background-color: cornsilk;
+    font-family: Rubik;
+    overflow: hidden;
+}
+
+.d-flex {
+    display: flex;
+}
+
+.ai-center {
+    align-items: center;
+}
+
+.ai-top {
+    align-items: flex-start;
+}
+
+.jc-start {
+    justify-content: flex-start;
+}
+
+.jc-start {
+    justify-content: flex-start;
+}
+
+.jc-space-btw {
+    justify-content: space-between;
+}
+
+.jc-space-evenly {
+    justify-content: space-evenly;
+}
+
+.jc-space-around {
+    justify-content: space-around;
+}
+
+.wrap {
+    flex-wrap: wrap;
+}

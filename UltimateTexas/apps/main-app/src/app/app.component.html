@@ -1,0 +1,200 @@
+<app-header />
+
+<div class="d-flex ai-top jc-space-btw">
+  <div class="d-flex ai-center jc-space-btw" [style.width.%]="30">
+
+    <div class="payout-board">
+      <p class="title center red">Trips Payout</p>
+      <div *ngFor="let payout of tripsPatout" class="d-flex ai-center jc-space-btw">
+        <p class="subtitle blue"> {{payout.handName}}</p>
+        <p class="subtitle blue"> {{payout.payoutString}}</p>
+      </div>
+    </div>
+
+    <div class="payout-board">
+      <p class="title center red">Blind Payout</p>
+      <div *ngFor="let payout of blindPatout" class="d-flex ai-center jc-space-btw">
+        <p class="subtitle blue"> {{payout.handName}}</p>
+        <p class="subtitle blue"> {{payout.payoutString}}</p>
+      </div>
+
+      <div class="d-flex ai-center jc-space-btw">
+        <p class="subtitle blue"> Other Hands</p>
+        <p class="subtitle blue"> Push</p>
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="center" [style.width.%]="30">
+    <p class="title">Dealer Hand<span *ngIf="dealerHand">&nbsp;-&nbsp;{{dealerHand.handDescription}}</span></p>
+
+    <div class="d-flex ai-center jc-space-btw" [style.width.%]="40" [style.margin]="'auto'">
+      <div *ngFor="let card of dealerCards;">
+        <app-display-card [card]="card" />
+      </div>
+    </div>
+
+    <p class="title">Community Cards</p>
+
+    <div class="d-flex ai-center jc-space-btw" [style.width.%]="100" [style.margin]="'auto'">
+      <div *ngFor="let card of communityCards;">
+        <app-display-card [card]="card" />
+      </div>
+    </div>
+  </div>
+
+  <div [style.width.%]="40">
+    <div class="d-flex ai-center jc-space-around" [style.width.%]="96" [style.margin]="'auto'">
+      <app-rectangle-btn [label]="'Deal'" [disabled]="handStage !== HandState.NotStarted || isInvalid"
+        (clicked)="deal()" />
+      <app-rectangle-btn [label]="'Open Flop'" [disabled]="handStage !== HandState.PreFlop" (clicked)="flop()" />
+      <app-rectangle-btn [label]="'Open River'" [disabled]="handStage !== HandState.AfterFlop" (clicked)="river()" />
+    </div>
+    <div class="d-flex ai-center jc-space-around" [style.width.%]="96" [style.margin-top.px]="15">
+      <app-rectangle-btn [label]="'Dealer Hand'" [disabled]="handStage !== HandState.AfterRiver || !isAllDecided"
+        (clicked)="openDealerHand()" />
+      <app-rectangle-btn [label]="'Next Hand'" [disabled]="handStage !== HandState.DealerHand" (clicked)="nextHand()" />
+    </div>
+  </div>
+</div>
+
+<div class="d-flex ai-center jc-space-btw" [style.width.%]="96" [style.margin-top.px]="15" [style.margin-left.px]="30">
+  <div *ngFor="let spot of playerSpots; let i=index" class="player-spot-board">
+    <div class="d-flex ai-center jc-space-btw" [style.width.%]="96">
+      <p class="title red">Player Spot No {{i+1}}</p>
+      <app-switch *ngIf="handStage == HandState.NotStarted" [(isOn)]="spot.isActive"
+        (isOnChange)="setValidation(spot)" />
+    </div>
+
+    <div *ngIf="spot.isActive">
+
+      <div class="d-flex ai-top jc-space-btw">
+        <div [style.width.%]="55">
+
+          <div class="d-flex ai-center jc-space-around">
+            <!-- <div class="total-bet-board">
+              <p class="total-bet-title">Total Bet</p>
+              <p class="total-bet-amount"> {{spot.totalBet}}</p>
+            </div> -->
+
+            <app-get-number [name]="'Trips'" [showControls]="handStage == HandState.NotStarted" [(value)]="spot.trips"
+              (valueChange)="setValidation(spot)" />
+            <app-get-number [name]="'Ante'" [showControls]="handStage == HandState.NotStarted" [(value)]="spot.ante"
+              (valueChange)="setValidation(spot)" />
+          </div>
+          <div class="d-flex ai-center jc-space-around">
+            <app-get-number [name]="'Play'" [showControls]="false" [(value)]="spot.play"
+              (valueChange)="setValidation(spot)" />
+            <app-get-number [name]="'Blind'" [showControls]="false" [(value)]="spot.ante"
+              (valueChange)="setValidation(spot)" />
+          </div>
+
+          <div class="d-flex ai-center jc-space-around" [style.margin.px]="10">
+            <div *ngFor="let card of spot.cards;">
+              <app-display-card [card]="card" />
+            </div>
+          </div>
+
+          <p *ngIf="handStage!==HandState.NotStarted" class="subtitle center">{{spot.currentHand?.handDescription}}</p>
+
+          <div *ngIf="handStage == HandState.PreFlop" class="d-flex ai-center jc-space-around" [style.margin.px]="10">
+            <app-rectangle-btn *ngIf="spot.betStage==BetStage.NoBet" [label]="'Bet 3X'" [size]="'small'"
+              [disabled]="false" (clicked)="betX3(spot)" />
+            <app-rectangle-btn *ngIf="spot.betStage==BetStage.NoBet" [label]="'Bet 4X'" [size]="'small'"
+              [disabled]="false" (clicked)="betX4(spot)" [style]="'negative'" />
+            <app-rectangle-btn *ngIf="spot.betStage==BetStage.PreFlop" [label]="'Cancel'" [size]="'small'"
+              [disabled]="false" (clicked)="cancel(spot)" />
+          </div>
+
+          <div *ngIf="handStage == HandState.AfterFlop" class="d-flex ai-center jc-space-around" [style.margin.px]="10">
+            <app-rectangle-btn *ngIf="spot.betStage==BetStage.NoBet" [label]="'Bet 2X'" [size]="'small'"
+              [disabled]="false" (clicked)="betX2(spot)" />
+            <app-rectangle-btn *ngIf="spot.betStage === BetStage.AfterFlop" [label]="'Cancel'" [size]="'small'"
+              [disabled]="false" (clicked)="cancel(spot)" />
+          </div>
+
+          <div *ngIf="handStage == HandState.AfterRiver" class="d-flex ai-center jc-space-around"
+            [style.margin.px]="10">
+            <app-rectangle-btn *ngIf="spot.betStage==BetStage.NoBet" [label]="'Fold'" [size]="'small'"
+              [disabled]="false" (clicked)="fold(spot)" />
+            <app-rectangle-btn *ngIf="spot.betStage==BetStage.NoBet" [label]="'Bet 1X'" [size]="'small'"
+              [disabled]="false" (clicked)="betX1(spot)" [style]="'negative'" />
+            <app-rectangle-btn *ngIf="spot.betStage === BetStage.AfterRiver || spot.betStage === BetStage.Fold"
+              [label]="'Cancel'" [size]="'small'" [disabled]="false" (clicked)="cancel(spot)" />
+
+          </div>
+
+        </div>
+        <div [style.width.%]="45">
+          <div>
+            <div class="d-flex ai-center jc-space-btw">
+              <p class="balance-style blue">Trips Balance</p>
+              <p class="balance-style blue">{{spot.tripsBalance}}</p>
+            </div>
+            <div class="d-flex ai-center jc-space-btw">
+              <p class="balance-style blue">Preflop Bets Balance</p>
+              <p class="balance-style blue">{{spot.preFlopBalance}}</p>
+            </div>
+            <div class="d-flex ai-center jc-space-btw">
+              <p class="balance-style blue">Flop Bets Balance</p>
+              <p class="balance-style blue">{{spot.flopBalance}}</p>
+            </div>
+            <div class="d-flex ai-center jc-space-btw">
+              <p class="balance-style blue">River Bets Balance</p>
+              <p class="balance-style blue">{{spot.riverBalance}}</p>
+            </div>
+            <div class="d-flex ai-center jc-space-btw">
+              <p class="balance-style red">Total Balance</p>
+              <p class="balance-style red">{{spot.totalBalance}}</p>
+            </div>
+          </div>
+
+          <div [style.margin-top.px]="10">
+            <div class="d-flex ai-center jc-space-btw">
+              <p class="balance-style blue">Wins</p>
+              <p class="balance-style blue">{{spot.wins}}</p>
+            </div>
+            <div class="d-flex ai-center jc-space-btw">
+              <p class="balance-style blue">Losses</p>
+              <p class="balance-style blue">{{spot.losses}}</p>
+            </div>
+            <div class="d-flex ai-center jc-space-btw">
+              <p class="balance-style blue">Ties</p>
+              <p class="balance-style blue">{{spot.ties}}</p>
+            </div>
+            <div class="d-flex ai-center jc-space-btw">
+              <p class="balance-style red">Total Hands</p>
+              <p class="balance-style red">{{spot.totalBalance}}</p>
+            </div>
+          </div>
+
+          <div [style.margin-top.px]="10">
+            <p class="balance-style">Current Hand</p>
+            <div class="d-flex ai-center jc-space-btw">
+              <p class="balance-style blue">Total Bet</p>
+              <p class="balance-style blue">{{spot.totalBet}}</p>
+            </div>
+            <div class="d-flex ai-center jc-space-btw">
+              <p class="balance-style blue">Ties</p>
+              <p class="balance-style blue">{{spot.ties}}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- <div class="d-flex ai-center jc-start wrap">
+  <button (click)="getRandomCard()">Get Next</button>
+  <button (click)="reShuffeleCard()">Re-Shuffele</button>
+</div>
+
+<div class="d-flex ai-center jc-start wrap">
+  <div *ngFor="let card of cards; let i=index">
+    <app-display-card [card]="card" />
+  </div>
+</div> -->

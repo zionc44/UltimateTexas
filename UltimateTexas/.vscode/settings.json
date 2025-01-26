@@ -1,0 +1,6 @@
+{
+    "breadcrumbs.enabled": true,
+    "breadcrumbs.filePath": "last",
+    "explorer.compactFolders": false,
+    "workbench.tree.indent": 16
+}

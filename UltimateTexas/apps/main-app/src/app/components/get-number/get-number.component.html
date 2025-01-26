@@ -1,0 +1,14 @@
+<div class="number-circle-container">
+    <p class="name">{{ name }}</p>
+    <div class="controls">
+        <!-- Show +/- buttons only if 'showControls' is true -->
+        <button *ngIf="showControls" class="circle-button" (click)="decrement()" [style.padding-bottom.px]="3"
+            [style.padding-right.px]="2">-</button>
+
+        <div class="circle">
+            <span class="number">{{ value }}</span>
+        </div>
+
+        <button *ngIf="showControls" class="circle-button" (click)="increment()">+</button>
+    </div>
+</div>

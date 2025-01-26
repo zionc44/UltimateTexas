@@ -1,0 +1,65 @@
+.number-circle-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: Arial, sans-serif;
+}
+
+.name {
+    margin-bottom: 5px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.circle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background-color: #f0f0f0;
+    border: 1px solid #0b4882;
+}
+
+.number {
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+}
+
+.circle-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    color: #0b4882;
+    width: 20px;
+    height: 20px;
+    border: 1px solid #0b4882;
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+    line-height: 1;
+    /* Ensures no extra space around the text */
+    padding: 0;
+    /* Remove extra padding */
+}
+
+.circle-button:hover {
+    background-color: #0b4882;
+    color: white;
+}
+
+.circle-button:focus {
+    outline: none;
+}

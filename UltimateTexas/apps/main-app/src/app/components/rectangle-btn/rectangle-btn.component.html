@@ -1,0 +1,10 @@
+<button 
+  class="rectangle-button"
+  [class.outline]="style === 'outline'"
+  [class.negative]="style === 'negative'"
+  [class.small]="size === 'small'"
+  [class.disabled]="disabled"
+  [disabled]="disabled"
+  (click)="onClick()">
+  {{ label }}
+</button>

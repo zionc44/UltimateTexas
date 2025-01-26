@@ -1,0 +1,73 @@
+.dealer-container {
+    width: 30%;
+}
+
+.title {
+    font-size: 20px;
+    margin: 10px;
+}
+
+.subtitle {
+    font-size: 17px;
+    margin: 9px;
+}
+
+.center {
+    text-align: center;
+}
+
+.payout-board {
+    width: 40%;
+    height: 325px;
+    border: 1px solid;
+    border-radius: 15px;
+    background: white;
+    margin: 0px 28px;
+}
+
+.red {
+    color: #f20000;
+}
+
+.blue {
+    color: #0b4882;
+}
+
+.player-spot-board {
+    width: 24%;
+    height: 425px;
+    border: 1px solid;
+    border-radius: 15px;
+    background: white;
+}
+
+.total-bet-board {
+    position: absolute;
+    width: 70px;
+    height: 40px;
+    border: 1px solid;
+    border-radius: 15px;
+    background: #e4e4e4;
+    margin-top: -40px
+}
+
+.total-bet-board .total-bet-title {
+    font-size: 10px;
+    margin: 3px auto;
+    border-bottom: 1px solid;
+    color: #0b4882;
+    width: 80%;
+    text-align: center;
+}
+
+.total-bet-board .total-bet-amount {
+    font-size: 17px;
+    font-weight: 500;
+    margin: auto;
+    text-align: center;
+}
+
+.balance-style{
+    font-size: 14px;
+    margin: 5px;
+}

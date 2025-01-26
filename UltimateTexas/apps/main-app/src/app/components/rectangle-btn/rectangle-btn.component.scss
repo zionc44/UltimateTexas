@@ -1,0 +1,94 @@
+.rectangle-button {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s, transform 0.2s, box-shadow 0.3s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    height: 40px;
+    width: 140px;
+}
+
+.small {
+    width: 75px;
+    height: 30px;
+    font-size: 12px;
+    padding: 5px 15px;
+}
+
+.rectangle-button.outline {
+    background-color: white;
+    color: #0b4882;
+    border: 2px solid #0b4882;
+}
+
+.rectangle-button.outline:hover:not(.rectangle-button.disabled) {
+    background-color: #f0f6fc;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    font-size: 15px;
+}
+
+.rectangle-button.outline.small:hover:not(.rectangle-button.disabled) {
+    background-color: #f0f6fc;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    font-size: 13px;
+}
+
+.rectangle-button.outline:active:not(.rectangle-button.disabled) {
+    background-color: #dfe9f5;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-size: 14px;
+}
+
+.rectangle-button.outline.small:active:not(.rectangle-button.disabled) {
+    background-color: #dfe9f5;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-size: 12px;
+}
+
+.rectangle-button.negative {
+    background-color: #0b4882;
+    color: #ffffff;
+    border-color: #0b4882;
+}
+
+.rectangle-button.negative:hover:not(.rectangle-button.disabled) {
+    background-color: #0a4277;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    font-size: 15px;
+}
+
+.rectangle-button.negative:active:not(.rectangle-button.disabled) {
+    background-color: #073a66;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-size: 14px;
+}
+
+.rectangle-button.negative.small:hover:not(.rectangle-button.disabled) {
+    background-color: #0a4277;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    font-size: 13px;
+}
+
+.rectangle-button.negative.small:active:not(.rectangle-button.disabled) {
+    background-color: #073a66;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-size: 12px;
+}
+
+.rectangle-button.disabled {
+    background-color: #cccccc;
+    color: #666666;
+    border: 2px solid #cccccc;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+.rectangle-button.disabled:hover,
+.rectangle-button.disabled:active {
+    background-color: #cccccc;
+    color: #666666;
+    transform: none;
+}
