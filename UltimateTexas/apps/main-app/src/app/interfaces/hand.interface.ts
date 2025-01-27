@@ -1,4 +1,4 @@
-import { Hand, HandRank } from "./calc-hand.function";
+import { Hand, HandRank, HandResult } from "./calc-hand.function";
 import { Card } from "./card.interfcae";
 
 
@@ -16,6 +16,7 @@ export enum BetStage {
     AfterFlop = 2,
     AfterRiver = 3,
     Fold = 4,
+    HandOver = 5,
 }
 
 export function getHandName(handRank: HandRank): string {
@@ -79,9 +80,18 @@ export interface PlayerSpot {
     totalBet: number,
     cards: (Card | null)[],
     currentHand: Hand | null,
+    currentHandResult: HandResult,
+
+    tripsProfit: number,
+    anteProfit: number,
+    blindProfit: number,
+    playProfit: number,
+    totalProfit: number,
 
     totalBalance: number,
     tripsBalance: number,
+    anteBalance: number,
+    blindBalance: number,
     preFlopBalance: number,
     flopBalance: number,
     riverBalance: number,
@@ -113,8 +123,16 @@ export function INIT_PlayerSpot(): PlayerSpot {
         totalBet: 2,
         cards: [null, null],
         currentHand: null,
+        currentHandResult: HandResult.Tie,
+        tripsProfit: 0,
+        anteProfit: 0,
+        blindProfit: 0,
+        playProfit: 0,
+        totalProfit: 0,
         totalBalance: 0,
         tripsBalance: 0,
+        anteBalance: 0,
+        blindBalance: 0,
         preFlopBalance: 0,
         flopBalance: 0,
         riverBalance: 0,

@@ -13,6 +13,12 @@ export enum HandRank {
     RoyalFlush = 10,
 }
 
+export enum HandResult {
+    PlayerWin = 1,
+    PlayerLoss = 2,
+    Tie = 3
+}
+
 export interface Hand {
     rank: HandRank;
     cards: Card[]; // Cards that contribute to the hand
@@ -135,21 +141,32 @@ export function calculateBestHand(cards: Card[]): Hand {
     }
 
     // Check for Full House
-    let threeOfAKind: Card[] | null = null;
-    let pair: Card[] | null = null;
+    const trips: Card[][] = [];
+    const pairs: Card[][] = [];
     for (const group of groups.values()) {
-        if (group.length === 3 && !threeOfAKind) {
-            threeOfAKind = group;
-        } else if (group.length >= 2 && !pair) {
-            pair = group.slice(0, 2);
+        if (group.length === 3) {
+            trips.push(group);
+        } else if (group.length === 2) {
+            pairs.push(group);
         }
     }
-    if (threeOfAKind && pair) {
-        return {
-            rank: HandRank.FullHouse,
-            cards: [...threeOfAKind, ...pair],
-            handDescription: `Full House, ${cardValueToString(threeOfAKind[0].cardValue)}s over ${cardValueToString(pair[0].cardValue)}s`,
-        };
+
+    if (trips.length > 0) {
+        trips.sort((a, b) => b[0].cardValue - a[0].cardValue);
+        if (pairs.length > 0) {
+            pairs.sort((a, b) => b[0].cardValue - a[0].cardValue);
+            return {
+                rank: HandRank.FullHouse,
+                cards: [...trips[0], ...pairs[0]],
+                handDescription: `Full House, ${cardValueToString(trips[0][0].cardValue)}s over ${cardValueToString(pairs[0][0].cardValue)}s`,
+            };
+        } else if (trips.length > 1) {
+            return {
+                rank: HandRank.FullHouse,
+                cards: [...trips[0], ...trips[1].slice(0, 2)],
+                handDescription: `Full House, ${cardValueToString(trips[0][0].cardValue)}s over ${cardValueToString(trips[1][0].cardValue)}s`,
+            };
+        }
     }
 
     // Check for Flush
@@ -171,32 +188,18 @@ export function calculateBestHand(cards: Card[]): Hand {
     }
 
     // Check for Three of a Kind
-    if (threeOfAKind) {
-        const kickers = sortedCards.filter(card => card.cardValue !== threeOfAKind![0].cardValue).slice(0, 2);
+    if (trips.length > 0) {
+        const kickers = sortedCards.filter(card => card.cardValue !== trips[0][0].cardValue).slice(0, 2);
         return {
             rank: HandRank.Trips,
-            cards: [...threeOfAKind, ...kickers],
-            handDescription: `Three of a Kind, ${cardValueToString(threeOfAKind[0].cardValue)}s`,
+            cards: [...trips[0], ...kickers],
+            handDescription: `Three of a Kind, ${cardValueToString(trips[0][0].cardValue)}s`,
         };
     }
 
     // Check for Two Pair
-    const pairs: Card[][] = [];
-    for (const group of groups.values()) {
-        if (group.length === 2) {
-            pairs.push(group);
-        }
-    }
-
-
     if (pairs.length >= 2) {
-        pairs.sort((a, b) => b[0].cardValue - a[0].cardValue); // Sorting pairs by highest value
-
-
-        if (pairs.length > 2) {
-            pairs.pop()
-        }
-
+        pairs.sort((a, b) => b[0].cardValue - a[0].cardValue);
         const kickers = sortedCards.filter(card => !pairs.flat().includes(card)).slice(0, 1);
         return {
             rank: HandRank.TwoPairs,
@@ -223,40 +226,127 @@ export function calculateBestHand(cards: Card[]): Hand {
     };
 }
 
-
-
-// Function to compare two hands
-export function compareHands(hand1: Hand, hand2: Hand): number {
-    if (hand1.rank > hand2.rank) {
-        return 1;
-    } else if (hand1.rank < hand2.rank) {
-        return 2;
+export function compareHands(playerHand: Hand, dealerHand: Hand): HandResult {
+    if (playerHand.rank > dealerHand.rank) {
+        return HandResult.PlayerWin;
+    } else if (playerHand.rank < dealerHand.rank) {
+        return HandResult.PlayerLoss;
     } else {
-        // Ranks are equal; compare the cards contributing to the rank
-        const hand1Sorted = sortCardsByValue(hand1.cards);
-        const hand2Sorted = sortCardsByValue(hand2.cards);
+        // Ranks are equal; compare cards contributing to the rank
+        const compareByContribution = (cards1: Card[], cards2: Card[]): HandResult => {
+            for (let i = 0; i < Math.min(cards1.length, cards2.length); i++) {
+                if (cards1[i].cardValue > cards2[i].cardValue) {
+                    return HandResult.PlayerWin;
+                } else if (cards1[i].cardValue < cards2[i].cardValue) {
+                    return HandResult.PlayerLoss;
+                }
+            }
+            return HandResult.Tie; // Contributions are identical
+        };
 
-        for (let i = 0; i < Math.min(hand1Sorted.length, hand2Sorted.length); i++) {
-            if (hand1Sorted[i].cardValue > hand2Sorted[i].cardValue) {
-                return 1;
-            } else if (hand1Sorted[i].cardValue < hand2Sorted[i].cardValue) {
-                return 2;
+        // Special case for low Ace straight (A, 2, 3, 4, 5)
+        const isLowAceStraight = (hand: Hand): boolean => {
+            const values = hand.cards.map(card => card.cardValue);
+            return values.includes(14) && values.includes(5) && values.includes(4) && values.includes(3) && values.includes(2);
+        };
+
+        if ((playerHand.rank === HandRank.Straight && dealerHand.rank === HandRank.Straight) ||
+            (playerHand.rank === HandRank.StraightFlush && dealerHand.rank === HandRank.StraightFlush)) {
+            const playerIsLowAceStraight = isLowAceStraight(playerHand);
+            const dealerIsLowAceStraight = isLowAceStraight(dealerHand);
+
+            if (playerIsLowAceStraight && !dealerIsLowAceStraight) {
+                return HandResult.PlayerLoss;
+            } else if (!playerIsLowAceStraight && dealerIsLowAceStraight) {
+                return HandResult.PlayerWin;
             }
         }
 
-        // If the contributing cards are identical, compare kickers
-        const allHand1Cards = sortCardsByValue(hand1.cards);
-        const allHand2Cards = sortCardsByValue(hand2.cards);
+        // Compare based on the rank
+        switch (playerHand.rank) {
+            case HandRank.Pair: {
+                // Compare the pair first, then the kickers
+                const playerPair = [playerHand.cards[0]];
+                const dealerPair = [dealerHand.cards[0]];
 
-        for (let i = 0; i < Math.min(allHand1Cards.length, allHand2Cards.length); i++) {
-            if (allHand1Cards[i].cardValue > allHand2Cards[i].cardValue) {
-                return 1;
-            } else if (allHand1Cards[i].cardValue < allHand2Cards[i].cardValue) {
-                return 2;
+                // Compare pair
+                let result = compareByContribution(playerPair, dealerPair);
+                if (result !== HandResult.Tie) return result;
+
+                // Compare kickers 
+                const playerKicker = playerHand.cards.slice(2); // Last 3 card in Pair are the kickers
+                const dealerKicker = dealerHand.cards.slice(2);
+                return compareByContribution(playerKicker, dealerKicker);
+            }
+            case HandRank.TwoPairs: {
+                // Compare the higher pair first, then the second pair, then the kicker
+                const playerPairs = [playerHand.cards[0], playerHand.cards[2]]; // First and second pairs
+                const dealerPairs = [dealerHand.cards[0], dealerHand.cards[2]];
+
+                // Compare higher pair
+                let result = compareByContribution(playerPairs, dealerPairs);
+                if (result !== HandResult.Tie) return result;
+
+                // Compare kicker
+                const playerKicker = playerHand.cards.slice(-1); // Last card in Two Pair is the kicker
+                const dealerKicker = dealerHand.cards.slice(-1);
+                return compareByContribution(playerKicker, dealerKicker);
+            }
+
+            case HandRank.Trips: {
+                // Compare the higher trips, then the kickers
+                const playerPairs = [playerHand.cards[0]];
+                const dealerPairs = [dealerHand.cards[0]];
+
+                // Compare higher pair
+                let result = compareByContribution(playerPairs, dealerPairs);
+                if (result !== HandResult.Tie) return result;
+
+                // Compare kicker
+                const playerKicker = playerHand.cards.slice(3); // Last 2 card in Trips are the kickers
+                const dealerKicker = dealerHand.cards.slice(3);
+                return compareByContribution(playerKicker, dealerKicker);
+            }
+
+            case HandRank.FullHouse: {
+                // Compare the trips first, then the pair
+                const playerTrips = playerHand.cards.slice(0, 3);
+                const dealerTrips = dealerHand.cards.slice(0, 3);
+                let result = compareByContribution(playerTrips, dealerTrips);
+                if (result !== HandResult.Tie) return result;
+
+                const playerFullHousePair = playerHand.cards.slice(3, 5);
+                const dealerFullHousePair = dealerHand.cards.slice(3, 5);
+                return compareByContribution(playerFullHousePair, dealerFullHousePair);
+            }
+
+            case HandRank.Quads: {
+                // Compare the higher quads first, then the kicker
+                const playerPairs = [playerHand.cards[0]];
+                const dealerPairs = [dealerHand.cards[0]];
+
+                // Compare higher pair
+                let result = compareByContribution(playerPairs, dealerPairs);
+                if (result !== HandResult.Tie) return result;
+
+                // Compare kicker
+                const playerKicker = playerHand.cards.slice(-1); // Last card in Quads is the kicker
+                const dealerKicker = dealerHand.cards.slice(-1);
+                return compareByContribution(playerKicker, dealerKicker);
+            }
+            default: {
+                // Compare contributing cards for all other hand types
+                let result = compareByContribution(
+                    sortCardsByValue(playerHand.cards),
+                    sortCardsByValue(dealerHand.cards)
+                );
+                if (result !== HandResult.Tie) return result;
+
+                // Compare remaining cards (kickers) if needed
+                const allPlayerCards = sortCardsByValue(playerHand.cards);
+                const allDealerCards = sortCardsByValue(dealerHand.cards);
+                return compareByContribution(allPlayerCards, allDealerCards);
             }
         }
-
-        // All cards are equal, it's a tie
-        return 0;
     }
 }

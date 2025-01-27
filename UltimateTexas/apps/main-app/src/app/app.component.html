@@ -5,7 +5,7 @@
 
     <div class="payout-board">
       <p class="title center red">Trips Payout</p>
-      <div *ngFor="let payout of tripsPatout" class="d-flex ai-center jc-space-btw">
+      <div *ngFor="let payout of tripsPayout" class="d-flex ai-center jc-space-btw">
         <p class="subtitle blue"> {{payout.handName}}</p>
         <p class="subtitle blue"> {{payout.payoutString}}</p>
       </div>
@@ -13,7 +13,7 @@
 
     <div class="payout-board">
       <p class="title center red">Blind Payout</p>
-      <div *ngFor="let payout of blindPatout" class="d-flex ai-center jc-space-btw">
+      <div *ngFor="let payout of blindPayout" class="d-flex ai-center jc-space-btw">
         <p class="subtitle blue"> {{payout.handName}}</p>
         <p class="subtitle blue"> {{payout.payoutString}}</p>
       </div>
@@ -63,7 +63,7 @@
 <div class="d-flex ai-center jc-space-btw" [style.width.%]="96" [style.margin-top.px]="15" [style.margin-left.px]="30">
   <div *ngFor="let spot of playerSpots; let i=index" class="player-spot-board">
     <div class="d-flex ai-center jc-space-btw" [style.width.%]="96">
-      <p class="title red">Player Spot No {{i+1}}</p>
+      <p class="title red" [style.margin-bottom.px]="0">Player Spot No {{i+1}}</p>
       <app-switch *ngIf="handStage == HandState.NotStarted" [(isOn)]="spot.isActive"
         (isOnChange)="setValidation(spot)" />
     </div>
@@ -74,11 +74,6 @@
         <div [style.width.%]="55">
 
           <div class="d-flex ai-center jc-space-around">
-            <!-- <div class="total-bet-board">
-              <p class="total-bet-title">Total Bet</p>
-              <p class="total-bet-amount"> {{spot.totalBet}}</p>
-            </div> -->
-
             <app-get-number [name]="'Trips'" [showControls]="handStage == HandState.NotStarted" [(value)]="spot.trips"
               (valueChange)="setValidation(spot)" />
             <app-get-number [name]="'Ante'" [showControls]="handStage == HandState.NotStarted" [(value)]="spot.ante"
@@ -129,72 +124,98 @@
         </div>
         <div [style.width.%]="45">
           <div>
-            <div class="d-flex ai-center jc-space-btw">
-              <p class="balance-style blue">Trips Balance</p>
-              <p class="balance-style blue">{{spot.tripsBalance}}</p>
+            <div class="d-flex ai-center jc-space-btw" [class.red]="spot.tripsBalance<0"
+              [class.green]="spot.tripsBalance>0" [class.blue]="spot.tripsBalance==0">
+              <p class="balance-style">Trips Balance</p>
+              <p class="balance-style">{{spot.tripsBalance}}</p>
             </div>
-            <div class="d-flex ai-center jc-space-btw">
-              <p class="balance-style blue">Preflop Bets Balance</p>
-              <p class="balance-style blue">{{spot.preFlopBalance}}</p>
+            <div class="d-flex ai-center jc-space-btw" [class.red]="spot.anteBalance<0"
+              [class.green]="spot.anteBalance>0" [class.blue]="spot.anteBalance==0">
+              <p class="balance-style">Ante Balance</p>
+              <p class="balance-style">{{spot.anteBalance}}</p>
             </div>
-            <div class="d-flex ai-center jc-space-btw">
-              <p class="balance-style blue">Flop Bets Balance</p>
-              <p class="balance-style blue">{{spot.flopBalance}}</p>
+            <div class="d-flex ai-center jc-space-btw" [class.red]="spot.blindBalance<0"
+              [class.green]="spot.blindBalance>0" [class.blue]="spot.blindBalance==0">
+              <p class="balance-style">Blind Balance</p>
+              <p class="balance-style">{{spot.blindBalance}}</p>
             </div>
-            <div class="d-flex ai-center jc-space-btw">
-              <p class="balance-style blue">River Bets Balance</p>
-              <p class="balance-style blue">{{spot.riverBalance}}</p>
+            <div class="d-flex ai-center jc-space-btw" [class.red]="spot.preFlopBalance<0"
+              [class.green]="spot.preFlopBalance>0" [class.blue]="spot.preFlopBalance==0">
+              <p class="balance-style">Preflop Bets Balance</p>
+              <p class="balance-style">{{spot.preFlopBalance}}</p>
             </div>
-            <div class="d-flex ai-center jc-space-btw">
-              <p class="balance-style red">Total Balance</p>
-              <p class="balance-style red">{{spot.totalBalance}}</p>
+            <div class="d-flex ai-center jc-space-btw" [class.red]="spot.flopBalance<0"
+              [class.green]="spot.flopBalance>0" [class.blue]="spot.flopBalance==0">
+              <p class="balance-style">Flop Bets Balance</p>
+              <p class="balance-style">{{spot.flopBalance}}</p>
             </div>
-          </div>
-
-          <div [style.margin-top.px]="10">
-            <div class="d-flex ai-center jc-space-btw">
-              <p class="balance-style blue">Wins</p>
-              <p class="balance-style blue">{{spot.wins}}</p>
+            <div class="d-flex ai-center jc-space-btw" [class.red]="spot.riverBalance<0"
+              [class.green]="spot.riverBalance>0" [class.blue]="spot.riverBalance==0">
+              <p class="balance-style">River Bets Balance</p>
+              <p class="balance-style">{{spot.riverBalance}}</p>
             </div>
-            <div class="d-flex ai-center jc-space-btw">
-              <p class="balance-style blue">Losses</p>
-              <p class="balance-style blue">{{spot.losses}}</p>
-            </div>
-            <div class="d-flex ai-center jc-space-btw">
-              <p class="balance-style blue">Ties</p>
-              <p class="balance-style blue">{{spot.ties}}</p>
-            </div>
-            <div class="d-flex ai-center jc-space-btw">
-              <p class="balance-style red">Total Hands</p>
-              <p class="balance-style red">{{spot.totalBalance}}</p>
+            <div class="d-flex ai-center jc-space-btw" [class.red]="spot.totalBalance<0"
+              [class.green]="spot.totalBalance>0" [class.blue]="spot.totalBalance==0">
+              <b class="balance-style">Total Balance</b>
+              <b class="balance-style">{{spot.totalBalance}}</b>
             </div>
           </div>
 
-          <div [style.margin-top.px]="10">
-            <p class="balance-style">Current Hand</p>
-            <div class="d-flex ai-center jc-space-btw">
-              <p class="balance-style blue">Total Bet</p>
-              <p class="balance-style blue">{{spot.totalBet}}</p>
+          <div class="d-flex ai-center jc-space-btw green">
+            <p class="balance-style">Wins</p>
+            <p class="balance-style">{{spot.wins}}</p>
+          </div>
+          <div class="d-flex ai-center jc-space-btw red">
+            <p class="balance-style">Losses</p>
+            <p class="balance-style">{{spot.losses}}</p>
+          </div>
+          <div class="d-flex ai-center jc-space-btw blue">
+            <p class="balance-style">Ties</p>
+            <p class="balance-style">{{spot.ties}}</p>
+          </div>
+          <div class="d-flex ai-center jc-space-btw blue">
+            <b class="balance-style">Total Hands</b>
+            <b class="balance-style">{{spot.totalHands}}</b>
+          </div>
+
+          <b class="balance-style underline">Current Hand</b>
+          <div class="d-flex ai-center jc-space-btw">
+            <p class="balance-style blue">Total Bet</p>
+            <p class="balance-style blue">{{spot.totalBet}}</p>
+          </div>
+          <div *ngIf="spot.betStage==BetStage.HandOver">
+            <p *ngIf="spot.currentHandResult==HandResult.PlayerWin" class="balance-style green">Player Hand Won !</p>
+            <p *ngIf="spot.currentHandResult==HandResult.PlayerLoss" class="balance-style red">Player Hand Lost !</p>
+            <p *ngIf="spot.currentHandResult==HandResult.Tie" class="balance-style blue">Push !</p>
+
+            <div class="d-flex ai-center jc-space-btw" [class.red]="spot.tripsProfit<0"
+              [class.green]="spot.tripsProfit>0" [class.blue]="spot.tripsProfit==0">
+              <p class="balance-style">Trips Profit</p>
+              <p class="balance-style">{{spot.tripsProfit}}</p>
             </div>
-            <div class="d-flex ai-center jc-space-btw">
-              <p class="balance-style blue">Ties</p>
-              <p class="balance-style blue">{{spot.ties}}</p>
+            <div class="d-flex ai-center jc-space-btw" [class.red]="spot.anteProfit<0" [class.green]="spot.anteProfit>0"
+              [class.blue]="spot.anteProfit==0">
+              <p class="balance-style">Ante Profit</p>
+              <p class="balance-style">{{spot.anteProfit}}</p>
+            </div>
+            <div class="d-flex ai-center jc-space-btw" [class.red]="spot.blindProfit<0"
+              [class.green]="spot.blindProfit>0" [class.blue]="spot.blindProfit==0">
+              <p class="balance-style">Blind Profit</p>
+              <p class="balance-style">{{spot.blindProfit}}</p>
+            </div>
+            <div class="d-flex ai-center jc-space-btw" [class.red]="spot.playProfit<0" [class.green]="spot.playProfit>0"
+              [class.blue]="spot.playProfit==0">
+              <p class="balance-style">Play Profit</p>
+              <p class="balance-style">{{spot.playProfit}}</p>
+            </div>
+            <div class="d-flex ai-center jc-space-btw" [class.red]="spot.totalProfit<0"
+              [class.green]="spot.totalProfit>0" [class.blue]="spot.totalProfit==0">
+              <p class="balance-style">Total Profit</p>
+              <p class="balance-style">{{spot.totalProfit}}</p>
             </div>
           </div>
         </div>
       </div>
-
     </div>
   </div>
 </div>
-
-<!-- <div class="d-flex ai-center jc-start wrap">
-  <button (click)="getRandomCard()">Get Next</button>
-  <button (click)="reShuffeleCard()">Re-Shuffele</button>
-</div>
-
-<div class="d-flex ai-center jc-start wrap">
-  <div *ngFor="let card of cards; let i=index">
-    <app-display-card [card]="card" />
-  </div>
-</div> -->

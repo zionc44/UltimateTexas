@@ -1,0 +1,7 @@
+Now, there is a problem with the compareHands that you provided
+
+in case of same ranke, e.g., onePair, the pair itself is not checked but only the kicker and therefore the result is in correct.
+
+i believed the same problem is existing on other hand ranks, such as two pairs & fullhouses.
+
+can you please fix the code to check the actual pair, two pairs and other, before checking the ckikers?

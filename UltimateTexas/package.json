@@ -2,7 +2,9 @@
   "name": "@ultimate-texas/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "start" : "nx serve main-app"
+  },
   "private": true,
   "dependencies": {
     "@angular/animations": "~19.0.0",

@@ -29,6 +29,10 @@
     color: #f20000;
 }
 
+.green {
+    color: #038c51;
+}
+
 .blue {
     color: #0b4882;
 }
@@ -67,7 +71,11 @@
     text-align: center;
 }
 
-.balance-style{
+.balance-style {
     font-size: 14px;
-    margin: 5px;
+    margin: 2px;
+}
+
+.underline {
+    border-bottom: 2px solid;
 }
