@@ -39,10 +39,6 @@ export class MainComponent {
     for (let i = 0; i < 4; i++) {
       this.playerSpots[i] = INIT_PlayerSpot();
     }
-
-    for (let i = 0; i < 15; i++) {
-      console.log(i + ") ", this.getCardsService.getRandomCard(true))
-    }
   }
 
   deal() {
@@ -90,7 +86,6 @@ export class MainComponent {
       if (spot.isActive) {
         let cardsList: (Card | null)[] = [...spot.cards, ...this.communityCards.filter(card => card?.isOpen)];
         spot.currentHand = calculateBestHand(cardsList as Card[]);
-        console.log("hand " + index + "===>", spot.currentHand, cardsList);
       }
     })
   }
@@ -102,7 +97,6 @@ export class MainComponent {
 
     let cardsList: (Card | null)[] = [...this.dealerCards, ...this.communityCards.filter(card => card?.isOpen)];
     this.dealerHand = calculateBestHand(cardsList as Card[]);
-    console.log("dealer hands====>", this.dealerHand, cardsList);
     this.calculatePlayerSpotsResults();
   }
 
@@ -233,7 +227,6 @@ export class MainComponent {
       }
     })
     this.isInvalid = !isOneSpotActive && !isMissingAnte;
-    console.log("isInvalid====>", this.isInvalid);
   }
 
   setAllDecided() {

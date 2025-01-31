@@ -38,12 +38,10 @@ export class BatchCalculationComponent {
 
   start() {
     this.isRunning = true;
-    console.log("iteration===>", this.iteration.value)
     this.strategiesIterations = [[], [], [], []]
     let previousIteration: (Iteration | null)[] = [null, null, null, null];
 
     for (let index = 0; index < this.iteration.value; index++) {
-      console.log("index====>", index);
       let basicIteration = this.initIteration();
 
       this.strategiesIterations.forEach((iteration, index) => {
@@ -78,7 +76,6 @@ export class BatchCalculationComponent {
       })
     }
 
-    console.log("iteration===>", this.strategiesIterations)
     this.isRunning = false;
 
   }
@@ -178,7 +175,6 @@ export class BatchCalculationComponent {
     let firstIndex = iteration.playerCards[0]!.cardValue - 2;
     let secordIndex = iteration.playerCards[1]!.cardValue - 2;
     let betOption: BetOption = this.strategies[strategyIndex][firstIndex][secordIndex]
-    console.log("betOption====>", iteration.playerCards, firstIndex, secordIndex, betOption)
     switch (betOption) {
       case BetOption.Bet:
         iteration.play = this.ante * 4;
