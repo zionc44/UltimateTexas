@@ -104,6 +104,40 @@ export interface PlayerSpot {
     handsHistory: DealerVsPlayer[],
 }
 
+export interface Iteration {
+    totalBet: number,
+    trips: number,
+    ante: number,
+    blind: number,
+    play: number,
+    playerCards: (Card | null)[],
+    dealerCards: (Card | null)[],
+    communityCards: (Card | null)[],
+    playerHand: Hand | null,
+    dealerHand: Hand | null,
+    handResult: HandResult,
+    betStage: BetStage;
+
+    tripsProfit: number,
+    anteProfit: number,
+    blindProfit: number,
+    playProfit: number,
+    totalProfit: number,
+
+    totalBalance: number,
+    tripsBalance: number,
+    anteBalance: number,
+    blindBalance: number,
+    preFlopBalance: number,
+    flopBalance: number,
+    riverBalance: number,
+
+    wins: number,
+    losses: number,
+    ties: number,
+    totalHands: number,
+}
+
 export interface DealerVsPlayer {
     dealerCards: (Card | null)[],
     playerCards: (Card | null)[],
@@ -114,7 +148,6 @@ export interface DealerVsPlayer {
 
 export function INIT_PlayerSpot(): PlayerSpot {
     return {
-
         isActive: false,
         trips: 0,
         ante: 1,
@@ -143,3 +176,107 @@ export function INIT_PlayerSpot(): PlayerSpot {
         handsHistory: []
     }
 }
+
+export function INIT_Iteration(): Iteration {
+    return {
+        betStage: BetStage.NoBet,
+        trips: 0,
+        ante: 0,
+        blind: 0,
+        play: 0,
+        totalBet: 2,
+        playerCards: [null, null],
+        dealerCards: [null, null],
+        communityCards: [null, null],
+        playerHand: null,
+        dealerHand: null,
+        handResult: HandResult.Tie,
+        tripsProfit: 0,
+        anteProfit: 0,
+        blindProfit: 0,
+        playProfit: 0,
+        totalProfit: 0,
+        totalBalance: 0,
+        tripsBalance: 0,
+        anteBalance: 0,
+        blindBalance: 0,
+        preFlopBalance: 0,
+        flopBalance: 0,
+        riverBalance: 0,
+        wins: 0,
+        losses: 0,
+        ties: 0,
+        totalHands: 0,
+    }
+}
+
+export enum BetOption {
+    Bet = 1,
+    OnlySutd = 2,
+    NotBet = 3,
+}
+
+export const HighRiskStrategy: BetOption[][] = [
+    [1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 1, 1], //2
+    [3, 1, 3, 3, 3, 3, 3, 3, 3, 3, 2, 1, 1], //3
+    [3, 3, 1, 3, 3, 3, 3, 3, 3, 3, 2, 1, 1], //4
+    [3, 3, 3, 1, 3, 3, 3, 3, 3, 2, 2, 1, 1], //5
+    [3, 3, 3, 3, 1, 3, 3, 3, 3, 2, 2, 1, 1], //6
+    [3, 3, 3, 3, 3, 1, 3, 3, 2, 2, 1, 1, 1], //7
+    [3, 3, 3, 3, 3, 3, 1, 3, 2, 1, 1, 1, 1], //8
+    [3, 3, 3, 3, 3, 3, 3, 1, 2, 1, 1, 1, 1], //9
+    [3, 3, 3, 3, 3, 2, 2, 2, 1, 1, 1, 1, 1], //10
+    [3, 3, 3, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1], //11
+    [2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1], //12 
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], //13
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], //14
+]
+
+export const ByTheBookStrategy: BetOption[][] = [
+    [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 1], //2
+    [3, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 1], //3
+    [3, 3, 1, 3, 3, 3, 3, 3, 3, 3, 3, 2, 1], //4
+    [3, 3, 3, 1, 3, 3, 3, 3, 3, 3, 3, 1, 1], //5
+    [3, 3, 3, 3, 1, 3, 3, 3, 3, 3, 2, 1, 1], //6
+    [3, 3, 3, 3, 3, 1, 3, 3, 3, 3, 2, 1, 1], //7
+    [3, 3, 3, 3, 3, 3, 1, 3, 3, 2, 1, 1, 1], //8
+    [3, 3, 3, 3, 3, 3, 3, 1, 3, 2, 1, 1, 1], //9
+    [3, 3, 3, 3, 3, 3, 3, 3, 1, 1, 1, 1, 1], //10
+    [3, 3, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 1], //11
+    [3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 1, 1, 1], //12 
+    [2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], //13
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], //14
+]
+
+export const ConservativeStrategy: BetOption[][] = [
+    [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2], //2
+    [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2], //3
+    [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2], //4
+    [3, 3, 3, 1, 3, 3, 3, 3, 3, 3, 3, 3, 2], //5
+    [3, 3, 3, 3, 1, 3, 3, 3, 3, 3, 3, 2, 2], //6
+    [3, 3, 3, 3, 3, 1, 3, 3, 3, 3, 3, 2, 1], //7
+    [3, 3, 3, 3, 3, 3, 1, 3, 3, 3, 2, 2, 1], //8
+    [3, 3, 3, 3, 3, 3, 3, 1, 3, 2, 2, 1, 1], //9
+    [3, 3, 3, 3, 3, 3, 3, 3, 1, 2, 2, 1, 1], //10
+    [3, 3, 3, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1], //11
+    [3, 3, 3, 3, 3, 3, 2, 2, 2, 1, 1, 1, 1], //12 
+    [3, 3, 3, 3, 2, 2, 2, 1, 1, 1, 1, 1, 1], //13
+    [2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1], //14
+]
+
+export const VeryConservativeStrategy: BetOption[][] = [
+    [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3], //2
+    [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3], //3
+    [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3], //4
+    [3, 3, 3, 1, 3, 3, 3, 3, 3, 3, 3, 3, 2], //5
+    [3, 3, 3, 3, 1, 3, 3, 3, 3, 3, 3, 3, 2], //6
+    [3, 3, 3, 3, 3, 1, 3, 3, 3, 3, 3, 3, 2], //7
+    [3, 3, 3, 3, 3, 3, 1, 3, 3, 3, 3, 2, 2], //8
+    [3, 3, 3, 3, 3, 3, 3, 1, 3, 3, 2, 2, 2], //9
+    [3, 3, 3, 3, 3, 3, 3, 3, 1, 2, 2, 1, 1], //10
+    [3, 3, 3, 3, 3, 3, 3, 3, 2, 1, 2, 1, 1], //11
+    [3, 3, 3, 3, 3, 3, 3, 2, 2, 2, 1, 1, 1], //12 
+    [3, 3, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 1], //13
+    [3, 3, 3, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1], //14
+]
+

@@ -10,7 +10,7 @@
       "executor": "@nx/angular:webpack-browser",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/apps/main-app",
+        "outputPath": "dist/apps/ultimate",
         "index": "apps/main-app/src/index.html",
         "main": "apps/main-app/src/main.ts",
         "polyfills": ["zone.js"],
@@ -45,7 +45,8 @@
           "outputHashing": "all",
           "customWebpackConfig": {
             "path": "apps/main-app/webpack.prod.config.ts"
-          }
+          },
+          "baseHref": "/ultimate/"
         },
         "development": {
           "buildOptimizer": false,

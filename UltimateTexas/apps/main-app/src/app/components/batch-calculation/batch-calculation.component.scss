@@ -1,0 +1,49 @@
+input {
+    height: 35px;
+    padding: 0 10px;
+    width: 118px;
+    border: 1px solid #0b4882;
+    border-radius: 5px;
+}
+
+input:focus {
+    outline: none;
+    border: 2px solid #0b4882;
+    height: 33px;
+    width: 116px;
+}
+
+input:read-only {
+    outline: none;
+    border: 2px solid lightgray;
+    height: 33px;
+    width: 116px;
+    background: #ededed;
+}
+
+.name {
+    margin-bottom: 5px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.strategy-board {
+    width: 385px;
+    height: 830px;
+    border: 1px solid;
+    border-radius: 15px;
+    background: white;
+    margin: 10px;
+}
+
+.table-container table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table-container th,
+.table-container td {
+    padding: 2px;
+    text-align: center;
+    border: 1px solid #ddd;
+}

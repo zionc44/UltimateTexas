@@ -15,9 +15,9 @@ export class DisplayCardComponent {
     if (this.card) {
       if (this.card.isOpen) {
         let value: string = this.card.cardValue < 10 ? "0" + this.card.cardValue : "" + this.card.cardValue
-        return "/cards/" + this.card.cardSign + "-" + value + ".svg";
+        return "cards/" + this.card.cardSign + "-" + value + ".svg";
       } else {
-        return "/cards/2B.svg"
+        return "cards/2B.svg"
       }
     }
 

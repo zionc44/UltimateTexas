@@ -1,0 +1,129 @@
+<div class="d-flex ai-top jc-start">
+    <div [style.width.%]="15" class="center">
+        <div [style.margin.px]="20">
+            <app-rectangle-btn [label]="'Back'" [disabled]="false" (clicked)="back()" />
+        </div>
+
+        <div [style.margin.px]="20">
+            <app-get-number [name]="'Trips'" [showControls]="!isRunning" [(value)]="trips" />
+        </div>
+        <div [style.margin.px]="20">
+            <app-get-number [name]="'Ante'" [showControls]="!isRunning" [(value)]="ante" />
+        </div>
+        <div [style.margin.px]="20">
+            <app-get-number [name]="'Blind'" [showControls]="false" [(value)]="ante" />
+        </div>
+
+        <div [style.margin.px]="20">
+            <p class="name">Iterations</p>
+            <input type="number" [formControl]="iteration" min="0" [readonly]="isRunning" />
+        </div>
+
+        <div [style.margin.px]="30">
+            <app-rectangle-btn [label]="'Start'" [disabled]="isRunning || ante==0 || this.iteration.value==0"
+                (clicked)="start()" />
+        </div>
+    </div>
+
+    <div class="d-flex ai-top jc-space-btw">
+        <div *ngFor="let iteration of strategiesIterations; let i=index" class="strategy-board">
+            <p class="title red" [style.margin-bottom.px]="0">Strategy No {{i+1}}</p>
+            <div class="table-container center" [style.margin.px]="15">
+                <table>
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th *ngFor="let cardValue of cardsValues">{{cardValue}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let strtegyRow of strategies[i]; let j=index">
+                            <td><b>{{cardsValues[j]}}</b></td>
+                            <td *ngFor="let betOption of strtegyRow" [class.background-green]="betOption==BetOption.Bet"
+                                [class.background-orange]="betOption==BetOption.OnlySutd"
+                                [class.background-red]="betOption==BetOption.NotBet"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div *ngIf="iteration.length>0">
+                <p class="subtitle">Iteration No {{iteration.length}} </p>
+                <div class="d-flex ai-top jc-space-btw">
+                    <div [style.width.%]="50" [style.margin.px]="5">
+                        <div class="d-flex ai-center jc-space-btw"
+                            [class.red]="iteration[iteration.length-1].tripsBalance<0"
+                            [class.green]="iteration[iteration.length-1].tripsBalance>0"
+                            [class.blue]="iteration[iteration.length-1].tripsBalance==0">
+                            <p class="balance-style">Trips Balance</p>
+                            <p class="balance-style">{{iteration[iteration.length-1].tripsBalance}}</p>
+                        </div>
+                        <div class="d-flex ai-center jc-space-btw"
+                            [class.red]="iteration[iteration.length-1].anteBalance<0"
+                            [class.green]="iteration[iteration.length-1].anteBalance>0"
+                            [class.blue]="iteration[iteration.length-1].anteBalance==0">
+                            <p class="balance-style">Ante Balance</p>
+                            <p class="balance-style">{{iteration[iteration.length-1].anteBalance}}</p>
+                        </div>
+                        <div class="d-flex ai-center jc-space-btw"
+                            [class.red]="iteration[iteration.length-1].blindBalance<0"
+                            [class.green]="iteration[iteration.length-1].blindBalance>0"
+                            [class.blue]="iteration[iteration.length-1].blindBalance==0">
+                            <p class="balance-style">Blind Balance</p>
+                            <p class="balance-style">{{iteration[iteration.length-1].blindBalance}}</p>
+                        </div>
+                        <div class="d-flex ai-center jc-space-btw"
+                            [class.red]="iteration[iteration.length-1].preFlopBalance<0"
+                            [class.green]="iteration[iteration.length-1].preFlopBalance>0"
+                            [class.blue]="iteration[iteration.length-1].preFlopBalance==0">
+                            <p class="balance-style">Preflop Bets Balance</p>
+                            <p class="balance-style">{{iteration[iteration.length-1].preFlopBalance}}</p>
+                        </div>
+                        <div class="d-flex ai-center jc-space-btw"
+                            [class.red]="iteration[iteration.length-1].flopBalance<0"
+                            [class.green]="iteration[iteration.length-1].flopBalance>0"
+                            [class.blue]="iteration[iteration.length-1].flopBalance==0">
+                            <p class="balance-style">Flop Bets Balance</p>
+                            <p class="balance-style">{{iteration[iteration.length-1].flopBalance}}</p>
+                        </div>
+                        <div class="d-flex ai-center jc-space-btw"
+                            [class.red]="iteration[iteration.length-1].riverBalance<0"
+                            [class.green]="iteration[iteration.length-1].riverBalance>0"
+                            [class.blue]="iteration[iteration.length-1].riverBalance==0">
+                            <p class="balance-style">River Bets Balance</p>
+                            <p class="balance-style">{{iteration[iteration.length-1].riverBalance}}</p>
+                        </div>
+                        <div class="d-flex ai-center jc-space-btw"
+                            [class.red]="iteration[iteration.length-1].totalBalance<0"
+                            [class.green]="iteration[iteration.length-1].totalBalance>0"
+                            [class.blue]="iteration[iteration.length-1].totalBalance==0">
+                            <b class="balance-style">Total Balance</b>
+                            <b class="balance-style">{{iteration[iteration.length-1].totalBalance}}</b>
+                        </div>
+
+                        <div class="d-flex ai-center jc-space-btw green">
+                            <p class="balance-style">Wins</p>
+                            <p class="balance-style">{{iteration[iteration.length-1].wins}}</p>
+                        </div>
+                        <div class="d-flex ai-center jc-space-btw red">
+                            <p class="balance-style">Losses</p>
+                            <p class="balance-style">{{iteration[iteration.length-1].losses}}</p>
+                        </div>
+                        <div class="d-flex ai-center jc-space-btw blue">
+                            <p class="balance-style">Ties</p>
+                            <p class="balance-style">{{iteration[iteration.length-1].ties}}</p>
+                        </div>
+                        <div class="d-flex ai-center jc-space-btw blue">
+                            <b class="balance-style">Total Hands</b>
+                            <b class="balance-style">{{iteration[iteration.length-1].totalHands}}</b>
+                        </div>
+                    </div>
+                    <div [style.width.%]="50" [style.margin.px]="5">
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
