@@ -10,6 +10,31 @@ body {
     overflow: hidden;
 }
 
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+/* Track */
+
+::-webkit-scrollbar-track {
+    border-radius: 10px;
+    background: #afafaf;
+}
+
+/* Handle */
+
+::-webkit-scrollbar-thumb {
+    background: #0b4882;
+    border-radius: 5px;
+}
+
+/* Handle on hover */
+
+::-webkit-scrollbar-thumb:hover {
+    background: #327dc3;
+}
+
 .d-flex {
     display: flex;
 }
@@ -48,6 +73,11 @@ body {
 
 .dealer-container {
     width: 30%;
+}
+
+.table-title {
+    font-size: 28px;
+    margin: 10px;
 }
 
 .title {

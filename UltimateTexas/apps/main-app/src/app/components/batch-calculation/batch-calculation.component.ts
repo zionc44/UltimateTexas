@@ -8,14 +8,18 @@ import { BetOption, BetStage, BlindPayout, ByTheBookStrategy, ConservativeStrate
 import { GetCardesService } from '../../services/get-cards.service';
 import { calculateBestHand, compareHands, Hand, HandRank, HandResult } from '../../interfaces/calc-hand.function';
 import { Card } from '../../interfaces/card.interfcae';
+import { ListOfLinesComponent } from '../list-of-lines/list-of-lines.component';
+import { CodeDecode, ColumnType, TableColumn } from '../../interfaces/table-column.interface';
 
 @Component({
   selector: 'app-batch-calculation',
-  imports: [CommonModule, RectangleBtnComponent, GetNumberComponent, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, RectangleBtnComponent, GetNumberComponent, FormsModule, ReactiveFormsModule, ListOfLinesComponent],
   templateUrl: './batch-calculation.component.html',
   styleUrl: './batch-calculation.component.scss',
 })
+
 export class BatchCalculationComponent {
+
   public BetOption = BetOption;
   public trips: number = 0;
   public ante: number = 0;
@@ -23,11 +27,54 @@ export class BatchCalculationComponent {
   public play: number = 0;
   public iteration: FormControl = new FormControl<number>(0);
   public isRunning: boolean = false;
+  public activeStategy: number = 0;
+  public activeIteration: Iteration[] | null = null
+  public maxHand: Hand | null = null;
 
-  public cardsValues: string[] = ["2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K", "A"]
-  public tripsPayout: Payout[] = TripsPayout;
-  public blindPayout: Payout[] = BlindPayout;
-  public strategies: BetOption[][][] = [
+  public readonly betStgaeCodes: CodeDecode[] = [
+    { code: 1, decode: "Pre Flop" },
+    { code: 2, decode: "After Flop" },
+    { code: 3, decode: " After River" },
+    { code: 4, decode: "Fold" },
+  ]
+
+  public readonly handResultsCodes: CodeDecode[] = [
+    { code: 1, decode: "Win" },
+    { code: 2, decode: "Loss" },
+    { code: 3, decode: " Tie" },
+  ]
+
+  public readonly detailsTablesColumns: TableColumn[] = [
+    { columnOrder: 10, columnName: "trips", columnTitle: "Trips", columnWidth: 3, coulmeType: ColumnType.Regular, codeDecodeList: [] },
+    { columnOrder: 20, columnName: "ante", columnTitle: "Ante", columnWidth: 3, coulmeType: ColumnType.Regular, codeDecodeList: [] },
+    { columnOrder: 30, columnName: "blind", columnTitle: "Blind", columnWidth: 3, coulmeType: ColumnType.Regular, codeDecodeList: [] },
+    { columnOrder: 40, columnName: "play", columnTitle: "Play", columnWidth: 3, coulmeType: ColumnType.Regular, codeDecodeList: [] },
+    { columnOrder: 50, columnName: "totalBet", columnTitle: "Bet", columnWidth: 3, coulmeType: ColumnType.Regular, codeDecodeList: [] },
+    { columnOrder: 60, columnName: "tripsProfit", columnTitle: "Trips Profit", columnWidth: 3, coulmeType: ColumnType.Regular, codeDecodeList: [] },
+    { columnOrder: 70, columnName: "anteProfit", columnTitle: "Ante Profit", columnWidth: 3, coulmeType: ColumnType.Regular, codeDecodeList: [] },
+    { columnOrder: 80, columnName: "blindProfit", columnTitle: "Blind Profit", columnWidth: 3, coulmeType: ColumnType.Regular, codeDecodeList: [] },
+    { columnOrder: 90, columnName: "playProfit", columnTitle: "Play Profit", columnWidth: 3, coulmeType: ColumnType.Regular, codeDecodeList: [] },
+    { columnOrder: 100, columnName: "totalProfit", columnTitle: "Profit", columnWidth: 3, coulmeType: ColumnType.Regular, codeDecodeList: [] },
+    { columnOrder: 110, columnName: "tripsBalance", columnTitle: "Total Trips", columnWidth: 3, coulmeType: ColumnType.Regular, codeDecodeList: [] },
+    { columnOrder: 120, columnName: "anteBalance", columnTitle: "Total Ante", columnWidth: 3, coulmeType: ColumnType.Regular, codeDecodeList: [] },
+    { columnOrder: 130, columnName: "blindBalance", columnTitle: "Total Blind", columnWidth: 3, coulmeType: ColumnType.Regular, codeDecodeList: [] },
+    { columnOrder: 140, columnName: "totalBalance", columnTitle: "Balance", columnWidth: 3, coulmeType: ColumnType.Regular, codeDecodeList: [] },
+    { columnOrder: 150, columnName: "betStage", columnTitle: "Bet Stage", columnWidth: 5, coulmeType: ColumnType.CodeDecode, codeDecodeList: this.betStgaeCodes },
+    { columnOrder: 160, columnName: "handResult", columnTitle: "Result", columnWidth: 3, coulmeType: ColumnType.CodeDecode, codeDecodeList: this.handResultsCodes },
+    { columnOrder: 180, columnName: "wins", columnTitle: "Wins", columnWidth: 3, coulmeType: ColumnType.Regular, codeDecodeList: [] },
+    { columnOrder: 190, columnName: "losses", columnTitle: "Losses", columnWidth: 3, coulmeType: ColumnType.Regular, codeDecodeList: [] },
+    { columnOrder: 200, columnName: "ties", columnTitle: "Ties", columnWidth: 3, coulmeType: ColumnType.Regular, codeDecodeList: [] },
+    { columnOrder: 210, columnName: "totalHands", columnTitle: "Hands", columnWidth: 3, coulmeType: ColumnType.Regular, codeDecodeList: [] },
+    { columnOrder: 220, columnName: "playerCards", columnTitle: "Player Cards", columnWidth: 8, coulmeType: ColumnType.Cards, codeDecodeList: [] },
+    { columnOrder: 230, columnName: "communityCards", columnTitle: "Community Cards", columnWidth: 18, coulmeType: ColumnType.Cards, codeDecodeList: [] },
+    { columnOrder: 240, columnName: "dealerCards", columnTitle: "Dealer Cards", columnWidth: 8, coulmeType: ColumnType.Cards, codeDecodeList: [] },
+  ];
+
+
+  public readonly cardsValues: string[] = ["2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K", "A"]
+  public readonly tripsPayout: Payout[] = TripsPayout;
+  public readonly blindPayout: Payout[] = BlindPayout;
+  public readonly strategies: BetOption[][][] = [
     HighRiskStrategy, ByTheBookStrategy, ConservativeStrategy, VeryConservativeStrategy
   ]
 
@@ -38,6 +85,7 @@ export class BatchCalculationComponent {
 
   start() {
     this.isRunning = true;
+    this.maxHand = null;
     this.strategiesIterations = [[], [], [], []]
     let previousIteration: (Iteration | null)[] = [null, null, null, null];
 
@@ -62,13 +110,16 @@ export class BatchCalculationComponent {
         }
 
         this.handlePreFlopBet(iteration[iteration.length - 1], index);
+
         if (iteration[iteration.length - 1].betStage === BetStage.NoBet) {
           this.handleFlopBet(iteration[iteration.length - 1]);
 
           if (iteration[iteration.length - 1].betStage === BetStage.NoBet) {
+            this.handleRiverBet(iteration[iteration.length - 1]);
           }
-          this.handleRiverBet(iteration[iteration.length - 1]);
         }
+
+        iteration[iteration.length - 1].totalBet = iteration[iteration.length - 1].trips + iteration[iteration.length - 1].ante + iteration[iteration.length - 1].blind + iteration[iteration.length - 1].play
 
         this.handleHandWinners(iteration[iteration.length - 1])
 
@@ -88,6 +139,14 @@ export class BatchCalculationComponent {
     iteration.playerHand = calculateBestHand(playerCards as Card[]);
     iteration.totalHands++;
 
+    if (this.maxHand) {
+      let res = compareHands(iteration.playerHand as Hand, this.maxHand as Hand);
+      if (res === HandResult.PlayerWin) {
+        this.maxHand = iteration.playerHand;
+      }
+    } else {
+      this.maxHand = iteration.playerHand;
+    }
     if (iteration.betStage === BetStage.Fold) {
       iteration.handResult = HandResult.PlayerLoss
     } else {
@@ -99,7 +158,7 @@ export class BatchCalculationComponent {
     this.calcAnteAndPlay(iteration);
     iteration.totalProfit = iteration.tripsProfit + iteration.anteProfit + iteration.blindProfit + iteration.playProfit;
     this.updatesBalanace(iteration);
-    iteration.betStage = BetStage.HandOver;
+    // iteration.betStage = BetStage.HandOver;
   }
 
   updatesBalanace(iteration: Iteration) {
@@ -216,17 +275,17 @@ export class BatchCalculationComponent {
 
     if (iteration.playerHand.rank > riverHand.rank) {
       iteration.play = this.ante * 1;
-      iteration.betStage = BetStage.AfterFlop;
+      iteration.betStage = BetStage.AfterRiver;
     } else if (riverHand.rank === HandRank.Flush || riverHand.rank === HandRank.FullHouse ||
       riverHand.rank === HandRank.RoyalFlush || riverHand.rank === HandRank.Straight ||
       riverHand.rank === HandRank.StraightFlush
     ) {
       iteration.play = this.ante * 1;
-      iteration.betStage = BetStage.AfterFlop;
+      iteration.betStage = BetStage.AfterRiver;
     }
     else if (playerValues.includes(14) || playerValues.includes(13) || playerValues.includes(12) || playerValues.includes(11)) {
       iteration.play = this.ante * 1;
-      iteration.betStage = BetStage.AfterFlop;
+      iteration.betStage = BetStage.AfterRiver;
     }
 
     if (iteration.betStage == BetStage.NoBet) {
@@ -251,10 +310,19 @@ export class BatchCalculationComponent {
 
     iteration.trips = this.trips
     iteration.ante = this.ante
-    iteration.blind = this.blind
+    iteration.blind = this.ante
     return iteration;
   }
 
+  goToDetails(index: number) {
+    this.activeIteration = this.strategiesIterations[index]
+    this.activeStategy = index + 1;
+
+  }
+
+  exit() {
+    this.activeIteration = null;
+  }
   back() {
     this.router.navigateByUrl("/main")
   }

@@ -1,0 +1,47 @@
+<div [style.height.px]="tableHeight" [style.width.px]="tableWidth">
+
+    <div class="table-lines-wrapper" [style.max-height.px]="tableHeight" [style.width.px]="tableWidth">
+
+        <table *ngIf="isDataReady" [style.width.%]="100">
+            <div class="table-header-cover" [style.width.px]="tableWidth-15">
+            </div>
+            <tr class="table-header d-flex jc-flex-start ai-center" [style.height.px]="headerHeight">
+                <ng-container *ngFor="let column of tableColumnsList; let i=index;">
+                    <th [style.width.px]="(actoalFieldWidth[i] * tableWidth) / 100">
+                        <div [style.width.px]="((actoalFieldWidth[i] * tableWidth) / 100)">
+                            <p> {{column.columnTitle}}</p>
+                        </div>
+                    </th>
+                </ng-container>
+            </tr>
+
+            <ng-container *ngFor="let lineIndex of linesIndexArray">
+                <tr class="table-line d-flex jc-flex-start ai-center" [style.height.px]="lineHeight"
+                    (click)="clickLine(lineIndex)">
+                    <ng-container *ngFor="let colIndex of colsIndexArray">
+                        <td [style.width.px]="(actoalFieldWidth[colIndex] * tableWidth) / 100">
+
+                            <p *ngIf="this.tableColumnsList[colIndex].coulmeType === ColumnType.Regular || this.tableColumnsList[colIndex].coulmeType === ColumnType.CodeDecode"
+                                class="column-value">
+                                {{getFieldValue(lineIndex,colIndex)}}
+                            </p>
+
+
+                            <div *ngIf="this.tableColumnsList[colIndex].coulmeType === ColumnType.Cards"
+                                [style.margin-right.px]="colIndex<(this.tableColumnsList.length-1)? 15 : 0"
+                                [style.margin-left.px]="colIndex==(this.tableColumnsList.length-1)? 15 : 0">
+                                <div class="d-flex jc-space-evenly ai-center">
+                                    <img *ngFor="let card of valuesGrid[lineIndex][colIndex]" src={{getImgName(card)}}>
+                                </div>
+                            </div>
+                        </td>
+                    </ng-container>
+                </tr>
+            </ng-container>
+        </table>
+
+        <div class="no-records-wrapper d-flex jc-center ai-center" *ngIf="tableData && tableData.length===0">
+            <p> לא נמצאו רשומות להצגה </p>
+        </div>
+    </div>
+</div>

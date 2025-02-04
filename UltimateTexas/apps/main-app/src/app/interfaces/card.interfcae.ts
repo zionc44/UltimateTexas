@@ -10,4 +10,4 @@ export interface Card {
     cardValue: number,
     cardIndex: number, 
     isOpen: boolean,
-}
+}       
