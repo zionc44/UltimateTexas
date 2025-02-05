@@ -1,33 +1,30 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChange, SimpleChanges } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChange, SimpleChanges } from '@angular/core';
 import { Card } from '../../interfaces/card.interfcae';
-import { ColumnType, TableColumn } from '../../interfaces/table-column.interface';
+import { ColumnType, SortOption, TableColumn } from '../../interfaces/table-column.interface';
+import { ArrowDownComponent } from './arrow-down/arrow-down.component';
 
 @Component({
     selector: 'app-list-of-lines',
     standalone: true,
     templateUrl: './list-of-lines.component.html',
     styleUrl: './list-of-lines.component.scss',
-    imports: [CommonModule],
-
+    imports: [CommonModule, ArrowDownComponent],
 })
 
 export class ListOfLinesComponent implements OnInit, OnChanges {
-
     @Input() tableColumnsList: TableColumn[] = [];
     @Input() tableData: any[] | null = null;
     @Input() tableWidth: number = 0;
     @Input() tableHeight: number = 0;
     @Input() headerHeight: number = 64;
     @Input() lineHeight: number = 90
-
     @Output() onClickLine: EventEmitter<number> = new EventEmitter<number>();
     @Output() onSortingChange: EventEmitter<number> = new EventEmitter<number>();
 
-
     public ColumnType = ColumnType;
+    public SortOption = SortOption;
     public isDataReady: boolean = false;
-    public sortingColumn: number = 0;
     public valuesGrid: any[][] = []
     public numOfLines: number = 0;
     public numOfColumns: number = 0;
@@ -36,8 +33,7 @@ export class ListOfLinesComponent implements OnInit, OnChanges {
     public totalWidth: number = 0;
     public actoalFieldWidth: number[] = [];
     public lineState: 'summary'[] | 'full'[] = []
-
-    constructor() { }
+    public activeSort: number = 0;
 
     ngOnInit(): void {
         this.tableColumnsList.sort((c1, c2) => c1.columnOrder - c2.columnOrder);
@@ -49,10 +45,16 @@ export class ListOfLinesComponent implements OnInit, OnChanges {
         }
 
         if (changes['tableData']) {
-
             this.isDataReady = false;
-            this.populateFieldGrid();
 
+            this.activeSort = this.tableColumnsList.findIndex(column => column.sortOption == SortOption.Asending || column.sortOption == SortOption.Desending)
+            if (this.tableColumnsList[this.activeSort].sortOption == SortOption.Asending) {
+                this.sortAsending();
+            } else {
+                this.sortDesending();
+            }
+
+            this.populateFieldGrid();
         }
     }
 
@@ -115,5 +117,35 @@ export class ListOfLinesComponent implements OnInit, OnChanges {
     getImgName(card: Card) {
         let value: string = card.cardValue < 10 ? "0" + card.cardValue : "" + card.cardValue
         return "cards/" + card.cardSign + "-" + value + ".svg";
+    }
+
+    sortingChange(index: number) {
+        if (this.tableColumnsList[index].sortOption != SortOption.NA) {
+            if (index == this.activeSort) {
+                this.tableColumnsList[this.activeSort].sortOption =
+                    this.tableColumnsList[this.activeSort].sortOption == SortOption.Asending ? SortOption.Desending : SortOption.Asending
+                if (this.tableColumnsList[this.activeSort].sortOption == SortOption.Asending) {
+                    this.sortAsending();
+                } else {
+                    this.sortDesending();
+                }
+
+            } else {
+                this.tableColumnsList[this.activeSort].sortOption = SortOption.NotSort;
+                this.tableColumnsList[index].sortOption = SortOption.Asending;
+                this.activeSort = index;
+
+                this.sortAsending();
+            }
+
+            this.populateFieldGrid();
+        }
+    }
+
+    sortAsending() {
+        this.tableData?.sort((a, b) => a[this.tableColumnsList[this.activeSort].columnName] - b[this.tableColumnsList[this.activeSort].columnName])
+    }
+    sortDesending() {
+        this.tableData?.sort((a, b) => b[this.tableColumnsList[this.activeSort].columnName] - a[this.tableColumnsList[this.activeSort].columnName])
     }
 }

@@ -100,6 +100,11 @@ th p {
     cursor: pointer;
 }
 
+
+.rotate180 {
+    transform: rotate(180deg);
+}
+
 .no-records-wrapper {
     margin: 100px auto;
     width: 400px;

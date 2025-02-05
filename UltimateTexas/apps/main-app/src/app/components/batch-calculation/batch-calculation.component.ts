@@ -9,7 +9,7 @@ import { GetCardesService } from '../../services/get-cards.service';
 import { calculateBestHand, compareHands, Hand, HandRank, HandResult } from '../../interfaces/calc-hand.function';
 import { Card } from '../../interfaces/card.interfcae';
 import { ListOfLinesComponent } from '../list-of-lines/list-of-lines.component';
-import { CodeDecode, ColumnType, TableColumn } from '../../interfaces/table-column.interface';
+import { CodeDecode, ColumnType, SortOption, TableColumn } from '../../interfaces/table-column.interface';
 
 @Component({
   selector: 'app-batch-calculation',
@@ -45,29 +45,31 @@ export class BatchCalculationComponent {
   ]
 
   public readonly detailsTablesColumns: TableColumn[] = [
-    { columnOrder: 10, columnName: "trips", columnTitle: "Trips", columnWidth: 3, coulmeType: ColumnType.Regular, codeDecodeList: [] },
-    { columnOrder: 20, columnName: "ante", columnTitle: "Ante", columnWidth: 3, coulmeType: ColumnType.Regular, codeDecodeList: [] },
-    { columnOrder: 30, columnName: "blind", columnTitle: "Blind", columnWidth: 3, coulmeType: ColumnType.Regular, codeDecodeList: [] },
-    { columnOrder: 40, columnName: "play", columnTitle: "Play", columnWidth: 3, coulmeType: ColumnType.Regular, codeDecodeList: [] },
-    { columnOrder: 50, columnName: "totalBet", columnTitle: "Bet", columnWidth: 3, coulmeType: ColumnType.Regular, codeDecodeList: [] },
-    { columnOrder: 60, columnName: "tripsProfit", columnTitle: "Trips Profit", columnWidth: 3, coulmeType: ColumnType.Regular, codeDecodeList: [] },
-    { columnOrder: 70, columnName: "anteProfit", columnTitle: "Ante Profit", columnWidth: 3, coulmeType: ColumnType.Regular, codeDecodeList: [] },
-    { columnOrder: 80, columnName: "blindProfit", columnTitle: "Blind Profit", columnWidth: 3, coulmeType: ColumnType.Regular, codeDecodeList: [] },
-    { columnOrder: 90, columnName: "playProfit", columnTitle: "Play Profit", columnWidth: 3, coulmeType: ColumnType.Regular, codeDecodeList: [] },
-    { columnOrder: 100, columnName: "totalProfit", columnTitle: "Profit", columnWidth: 3, coulmeType: ColumnType.Regular, codeDecodeList: [] },
-    { columnOrder: 110, columnName: "tripsBalance", columnTitle: "Total Trips", columnWidth: 3, coulmeType: ColumnType.Regular, codeDecodeList: [] },
-    { columnOrder: 120, columnName: "anteBalance", columnTitle: "Total Ante", columnWidth: 3, coulmeType: ColumnType.Regular, codeDecodeList: [] },
-    { columnOrder: 130, columnName: "blindBalance", columnTitle: "Total Blind", columnWidth: 3, coulmeType: ColumnType.Regular, codeDecodeList: [] },
-    { columnOrder: 140, columnName: "totalBalance", columnTitle: "Balance", columnWidth: 3, coulmeType: ColumnType.Regular, codeDecodeList: [] },
-    { columnOrder: 150, columnName: "betStage", columnTitle: "Bet Stage", columnWidth: 5, coulmeType: ColumnType.CodeDecode, codeDecodeList: this.betStgaeCodes },
-    { columnOrder: 160, columnName: "handResult", columnTitle: "Result", columnWidth: 3, coulmeType: ColumnType.CodeDecode, codeDecodeList: this.handResultsCodes },
-    { columnOrder: 180, columnName: "wins", columnTitle: "Wins", columnWidth: 3, coulmeType: ColumnType.Regular, codeDecodeList: [] },
-    { columnOrder: 190, columnName: "losses", columnTitle: "Losses", columnWidth: 3, coulmeType: ColumnType.Regular, codeDecodeList: [] },
-    { columnOrder: 200, columnName: "ties", columnTitle: "Ties", columnWidth: 3, coulmeType: ColumnType.Regular, codeDecodeList: [] },
-    { columnOrder: 210, columnName: "totalHands", columnTitle: "Hands", columnWidth: 3, coulmeType: ColumnType.Regular, codeDecodeList: [] },
-    { columnOrder: 220, columnName: "playerCards", columnTitle: "Player Cards", columnWidth: 8, coulmeType: ColumnType.Cards, codeDecodeList: [] },
-    { columnOrder: 230, columnName: "communityCards", columnTitle: "Community Cards", columnWidth: 18, coulmeType: ColumnType.Cards, codeDecodeList: [] },
-    { columnOrder: 240, columnName: "dealerCards", columnTitle: "Dealer Cards", columnWidth: 8, coulmeType: ColumnType.Cards, codeDecodeList: [] },
+
+    // { columnOrder: 10, columnName: "trips", columnTitle: "Trips", columnWidth: 3, coulmeType: ColumnType.Regular, codeDecodeList: [] },
+    // { columnOrder: 20, columnName: "ante", columnTitle: "Ante", columnWidth: 3, coulmeType: ColumnType.Regular, codeDecodeList: [] },
+    // { columnOrder: 30, columnName: "blind", columnTitle: "Blind", columnWidth: 3, coulmeType: ColumnType.Regular, codeDecodeList: [] },
+    { columnOrder: 30, columnName: "handId", columnTitle: "Hand Id", columnWidth: 3, coulmeType: ColumnType.Regular, codeDecodeList: [], sortOption: SortOption.NotSort },
+    { columnOrder: 40, columnName: "play", columnTitle: "Play", columnWidth: 3, coulmeType: ColumnType.Regular, codeDecodeList: [], sortOption: SortOption.NotSort },
+    { columnOrder: 50, columnName: "totalBet", columnTitle: "Bet", columnWidth: 3, coulmeType: ColumnType.Regular, codeDecodeList: [], sortOption: SortOption.NotSort },
+    { columnOrder: 60, columnName: "tripsProfit", columnTitle: "Trips Profit", columnWidth: 3, coulmeType: ColumnType.Regular, codeDecodeList: [], sortOption: SortOption.Desending },
+    { columnOrder: 70, columnName: "anteProfit", columnTitle: "Ante Profit", columnWidth: 3, coulmeType: ColumnType.Regular, codeDecodeList: [], sortOption: SortOption.NotSort },
+    { columnOrder: 80, columnName: "blindProfit", columnTitle: "Blind Profit", columnWidth: 3, coulmeType: ColumnType.Regular, codeDecodeList: [], sortOption: SortOption.NotSort },
+    { columnOrder: 90, columnName: "playProfit", columnTitle: "Play Profit", columnWidth: 3, coulmeType: ColumnType.Regular, codeDecodeList: [], sortOption: SortOption.NotSort },
+    { columnOrder: 100, columnName: "totalProfit", columnTitle: "Profit", columnWidth: 4, coulmeType: ColumnType.Regular, codeDecodeList: [], sortOption: SortOption.NotSort },
+    { columnOrder: 110, columnName: "tripsBalance", columnTitle: "Total Trips", columnWidth: 4, coulmeType: ColumnType.Regular, codeDecodeList: [], sortOption: SortOption.NotSort },
+    { columnOrder: 120, columnName: "anteBalance", columnTitle: "Total Ante", columnWidth: 4, coulmeType: ColumnType.Regular, codeDecodeList: [], sortOption: SortOption.NotSort },
+    { columnOrder: 130, columnName: "blindBalance", columnTitle: "Total Blind", columnWidth: 4, coulmeType: ColumnType.Regular, codeDecodeList: [], sortOption: SortOption.NotSort },
+    { columnOrder: 140, columnName: "totalBalance", columnTitle: "Balance", columnWidth: 4, coulmeType: ColumnType.Regular, codeDecodeList: [], sortOption: SortOption.NotSort },
+    { columnOrder: 150, columnName: "betStage", columnTitle: "Bet Stage", columnWidth: 5, coulmeType: ColumnType.CodeDecode, codeDecodeList: this.betStgaeCodes, sortOption: SortOption.NotSort },
+    { columnOrder: 160, columnName: "handResult", columnTitle: "Result", columnWidth: 3, coulmeType: ColumnType.CodeDecode, codeDecodeList: this.handResultsCodes, sortOption: SortOption.NotSort },
+    { columnOrder: 180, columnName: "wins", columnTitle: "Wins", columnWidth: 3, coulmeType: ColumnType.Regular, codeDecodeList: [], sortOption: SortOption.NA },
+    { columnOrder: 190, columnName: "losses", columnTitle: "Losses", columnWidth: 4, coulmeType: ColumnType.Regular, codeDecodeList: [], sortOption: SortOption.NA },
+    { columnOrder: 200, columnName: "ties", columnTitle: "Ties", columnWidth: 3, coulmeType: ColumnType.Regular, codeDecodeList: [], sortOption: SortOption.NA },
+    { columnOrder: 210, columnName: "totalHands", columnTitle: "Hands", columnWidth: 3, coulmeType: ColumnType.Regular, codeDecodeList: [], sortOption: SortOption.NA },
+    { columnOrder: 220, columnName: "playerCards", columnTitle: "Player Cards", columnWidth: 8, coulmeType: ColumnType.Cards, codeDecodeList: [], sortOption: SortOption.NA },
+    { columnOrder: 230, columnName: "communityCards", columnTitle: "Community Cards", columnWidth: 18, coulmeType: ColumnType.Cards, codeDecodeList: [], sortOption: SortOption.NA },
+    { columnOrder: 240, columnName: "dealerCards", columnTitle: "Dealer Cards", columnWidth: 8, coulmeType: ColumnType.Cards, codeDecodeList: [], sortOption: SortOption.NA },
   ];
 
 
@@ -89,14 +91,17 @@ export class BatchCalculationComponent {
     this.strategiesIterations = [[], [], [], []]
     let previousIteration: (Iteration | null)[] = [null, null, null, null];
 
-    for (let index = 0; index < this.iteration.value; index++) {
+    for (let handId = 0; handId < this.iteration.value; handId++) {
       let basicIteration = this.initIteration();
 
       this.strategiesIterations.forEach((iteration, index) => {
         iteration.push(JSON.parse(JSON.stringify(basicIteration)))
 
+        iteration[iteration.length - 1].handId = handId + 1;
         if (previousIteration[index]) {
           iteration[iteration.length - 1].totalBalance = previousIteration[index].totalBalance;
+          iteration[iteration.length - 1].maxBalance = previousIteration[index].maxBalance;
+          iteration[iteration.length - 1].minBalance = previousIteration[index].minBalance;
           iteration[iteration.length - 1].tripsBalance = previousIteration[index].tripsBalance;
           iteration[iteration.length - 1].anteBalance = previousIteration[index].anteBalance;
           iteration[iteration.length - 1].blindBalance = previousIteration[index].blindBalance;
@@ -107,6 +112,8 @@ export class BatchCalculationComponent {
           iteration[iteration.length - 1].losses = previousIteration[index].losses;
           iteration[iteration.length - 1].ties = previousIteration[index].ties;
           iteration[iteration.length - 1].totalHands = previousIteration[index].totalHands;
+          iteration[iteration.length - 1].tripsPayout = previousIteration[index].tripsPayout;
+
         }
 
         this.handlePreFlopBet(iteration[iteration.length - 1], index);
@@ -179,6 +186,14 @@ export class BatchCalculationComponent {
         break;
     }
     iteration.totalBalance += iteration.totalProfit;
+
+    if (iteration.totalBalance > iteration.maxBalance) {
+      iteration.maxBalance = iteration.totalBalance
+    }
+
+    if (iteration.totalBalance < iteration.minBalance) {
+      iteration.minBalance = iteration.totalBalance
+    }
   }
 
   calcAnteAndPlay(iteration: Iteration) {
@@ -223,8 +238,9 @@ export class BatchCalculationComponent {
 
   calcTrips(iteration: Iteration) {
     if (iteration.trips > 0 && iteration.playerHand!.rank >= HandRank.Trips) {
-      let tripsFactor = this.tripsPayout.find(payout => payout.handRank === iteration.playerHand!.rank)!.payoutFactor;
-      iteration.tripsProfit = iteration.trips * tripsFactor;
+      let tripsIndex = iteration.tripsPayout.findIndex(payout => payout.handRank === iteration.playerHand!.rank);
+      iteration.tripsPayout[tripsIndex].appearance++;
+      iteration.tripsProfit = iteration.trips * iteration.tripsPayout[tripsIndex].payoutFactor;
     } else {
       iteration.tripsProfit = -iteration.trips
     }

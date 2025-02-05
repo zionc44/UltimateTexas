@@ -5,13 +5,21 @@ export enum ColumnType {
     CodeDecode = 4,
 }
 
+export enum SortOption {
+    Asending = 1,
+    Desending = 2,
+    NotSort = 3,
+    NA = 4,
+}
+
 export interface TableColumn {
     columnOrder: number,
     columnName: string,
     columnWidth: number,
     columnTitle: string,
     coulmeType: ColumnType,
-    codeDecodeList: CodeDecode[];
+    codeDecodeList: CodeDecode[],
+    sortOption: SortOption
 }
 
 

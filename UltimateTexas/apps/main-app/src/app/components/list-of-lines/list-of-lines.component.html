@@ -8,8 +8,17 @@
             <tr class="table-header d-flex jc-flex-start ai-center" [style.height.px]="headerHeight">
                 <ng-container *ngFor="let column of tableColumnsList; let i=index;">
                     <th [style.width.px]="(actoalFieldWidth[i] * tableWidth) / 100">
-                        <div [style.width.px]="((actoalFieldWidth[i] * tableWidth) / 100)">
-                            <p> {{column.columnTitle}}</p>
+                        <div [class.sorting]="column.sortOption !=SortOption.NA"
+                            [style.width.px]="((actoalFieldWidth[i] * tableWidth) / 100)" (click)="sortingChange(i)">
+                            <p [class.red]="column.sortOption==SortOption.Asending ||
+                            column.sortOption==SortOption.Desending">
+                                {{column.columnTitle}}
+                            </p>
+                            <div [class.rotate180]="column.sortOption == SortOption.Desending"
+                                [style.margin-top.px]="-16">
+                                <rotem-client-arrow-down
+                                    *ngIf="column.sortOption == SortOption.Asending || column.sortOption == SortOption.Desending" />
+                            </div>
                         </div>
                     </th>
                 </ng-container>
