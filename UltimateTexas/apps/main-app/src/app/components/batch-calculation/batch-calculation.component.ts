@@ -103,6 +103,7 @@ export class BatchCalculationComponent {
           iteration[iteration.length - 1].maxBalance = previousIteration[index].maxBalance;
           iteration[iteration.length - 1].minBalance = previousIteration[index].minBalance;
           iteration[iteration.length - 1].tripsBalance = previousIteration[index].tripsBalance;
+          iteration[iteration.length - 1].noOfTrips = previousIteration[index].noOfTrips;
           iteration[iteration.length - 1].anteBalance = previousIteration[index].anteBalance;
           iteration[iteration.length - 1].blindBalance = previousIteration[index].blindBalance;
           iteration[iteration.length - 1].preFlopBalance = previousIteration[index].preFlopBalance;
@@ -238,6 +239,7 @@ export class BatchCalculationComponent {
 
   calcTrips(iteration: Iteration) {
     if (iteration.trips > 0 && iteration.playerHand!.rank >= HandRank.Trips) {
+      iteration.noOfTrips++;
       let tripsIndex = iteration.tripsPayout.findIndex(payout => payout.handRank === iteration.playerHand!.rank);
       iteration.tripsPayout[tripsIndex].appearance++;
       iteration.tripsProfit = iteration.trips * iteration.tripsPayout[tripsIndex].payoutFactor;
