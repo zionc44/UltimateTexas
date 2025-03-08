@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -8,6 +8,15 @@ import { CommonModule } from '@angular/common';
   styleUrl: './get-number.component.scss',
 })
 export class GetNumberComponent {
+
+  @ViewChild('span') mySpan!: ElementRef;
+
+  focusOut() {
+    this.value = Number(this.mySpan.nativeElement.innerHTML);
+    this.valueChange.emit(this.value);
+  }
+
+
   @Input() value: number = 0; // Two-way bound number
   @Output() valueChange = new EventEmitter<number>(); // Emitter for two-way binding
   @Input() name: string = ''; // Optional name for the component
@@ -24,4 +33,6 @@ export class GetNumberComponent {
       this.valueChange.emit(this.value);
     }
   }
+
+
 }

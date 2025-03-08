@@ -76,6 +76,11 @@
                 <app-rectangle-btn [label]="'Go To Batch'" [disabled]="handStage !== HandState.NotStarted"
                     (clicked)="batch()" />
             </div>
+
+            <div [style.margin.px]="20">
+                <app-rectangle-btn [label]="'Novo Poker'" [disabled]="handStage !== HandState.NotStarted"
+                    (clicked)="novo()" />
+            </div>
         </div>
     </div>
 </div>

@@ -288,6 +288,9 @@ export class MainComponent {
   batch() {
     this.router.navigateByUrl("/batch");
   }
+  novo() {
+    this.router.navigateByUrl("/novo");
+  }
 }
 
 

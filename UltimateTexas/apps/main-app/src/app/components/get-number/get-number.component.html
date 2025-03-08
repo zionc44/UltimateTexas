@@ -6,7 +6,7 @@
             [style.padding-right.px]="2">-</button>
 
         <div class="circle">
-            <span class="number">{{ value }}</span>
+            <span #span class="number" [attr.contenteditable]="showControls" (focusout)="focusOut()">{{ value }}</span>
         </div>
 
         <button *ngIf="showControls" class="circle-button" (click)="increment()">+</button>
