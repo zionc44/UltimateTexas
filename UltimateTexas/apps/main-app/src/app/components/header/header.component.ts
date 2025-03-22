@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { PalyingModeService, PlayingMode } from '../../services/playing-mode.service';
 
 @Component({
   selector: 'app-header',
@@ -7,4 +8,7 @@ import { CommonModule } from '@angular/common';
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
 })
-export class HeaderComponent {}
+export class HeaderComponent {
+  public PlayingMode = PlayingMode;
+  constructor(public playingModeService: PalyingModeService) { }
+}

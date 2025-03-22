@@ -9,6 +9,7 @@ import { calculateBestHand, compareHands, Hand, HandRank, HandResult } from '../
 import { Card } from '../../interfaces/card.interfcae';
 import { BetStage, BlindPayout, HandState, INIT_PlayerSpot, Payout, PlayerSpot, TripsPayout } from '../../interfaces/hand.interface';
 import { GetCardesService } from '../../services/get-cards.service';
+import { PalyingModeService, PlayingMode } from '../../services/playing-mode.service';
 
 @Component({
   selector: 'app-main',
@@ -35,7 +36,8 @@ export class MainComponent {
 
   constructor(
     private router: Router,
-    private getCardsService: GetCardesService) {
+    private getCardsService: GetCardesService,
+    public playingModeService: PalyingModeService) {
     for (let i = 0; i < 4; i++) {
       this.playerSpots[i] = INIT_PlayerSpot();
     }
@@ -289,6 +291,7 @@ export class MainComponent {
     this.router.navigateByUrl("/batch");
   }
   novo() {
+    this.playingModeService.currectMode = PlayingMode.Novo;
     this.router.navigateByUrl("/novo");
   }
 }

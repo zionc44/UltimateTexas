@@ -47,6 +47,10 @@ body {
     align-items: flex-start;
 }
 
+.ai-end {
+    align-items: flex-end;
+}
+
 .jc-start {
     justify-content: flex-start;
 }
@@ -176,4 +180,33 @@ body {
 
 .underline {
     border-bottom: 2px solid;
+}
+
+input {
+    height: 35px;
+    padding: 0 10px;
+    width: 118px;
+    border: 1px solid #0b4882;
+    border-radius: 5px;
+}
+
+input:focus {
+    outline: none;
+    border: 2px solid #0b4882;
+    height: 33px;
+    width: 116px;
+}
+
+input:read-only {
+    outline: none;
+    border: 2px solid lightgray;
+    height: 33px;
+    width: 116px;
+    background: #ededed;
+}
+
+.name {
+    margin-bottom: 5px;
+    font-size: 14px;
+    font-weight: bold;
 }

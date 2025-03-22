@@ -1,1 +1,258 @@
-<p>novo-poker works!</p>
+<div class="d-flex ai-top jc-space-btw">
+    <div [style.width.%]="20">
+        <div class="payout-board" [style.height.px]="420" [style.width.px]="325">
+            <p class="title center red">Express Bonus Payout</p>
+            <div *ngFor="let payout of expressBonusPayout" class="d-flex ai-center jc-space-btw">
+                <p class="subtitle blue"> {{payout.handName}}</p>
+                <p class="subtitle blue"> {{payout.payoutString}}</p>
+            </div>
+        </div>
+
+        <div class="payout-board" [style.height.px]="420" [style.width.px]="325" [style.margin-top.px]="10">
+            <p class="title center red">Hand Payout</p>
+            <div *ngFor="let payout of novoPayout" class="d-flex ai-center jc-space-btw">
+                <p class="subtitle blue"> {{payout.handName}}</p>
+                <p class="subtitle blue"> {{payout.payoutString}}</p>
+            </div>
+        </div>
+    </div>
+
+    <div [style.width.%]="80">
+        <div class="d-flex ai-top jc-space-btw">
+            <div [style.width.%]="30">
+                <app-rectangle-btn [label]="'Ultimate'" [disabled]="false" (clicked)="ultimate()" />
+            </div>
+
+            <div [style.width.%]="40" class="center">
+                <p class="title">Dealer Hand</p>
+                <div class="d-flex ai-center jc-space-btw" [style.margin]="'auto'">
+                    <div *ngFor="let card of dealerCards;">
+                        <app-display-card [card]="card" />
+                    </div>
+                </div>
+                <p class="title">&nbsp;<span *ngIf="dealerHand">{{dealerHand.handDescription}}</span>&nbsp;</p>
+            </div>
+            <div [style.width.%]="30">
+
+            </div>
+        </div>
+
+        <div [style.margin-top.px]="15" class="d-flex ai-top jc-space-btw">
+            <div [style.width.%]="30">
+                <div [style.height.px]="180">
+                    <div class="center">
+                        <app-rectangle-btn [label]="'Deal'"
+                            [disabled]="handState!=novoHandState.NotStarted || !isValidBet" (clicked)="deal()" />
+                    </div>
+
+                    <div [style.margin-top.px]="30" class="d-flex ai-top jc-space-around">
+                        <app-rectangle-btn [label]="'Bet'"
+                            [disabled]="(handState!=novoHandState.GotCards && handState!=novoHandState.ReplacedCards) || !isValidBet || !isValidInsurance"
+                            (clicked)="setBet()" />
+                        <app-rectangle-btn [label]="'Drop'"
+                            [disabled]="(handState!=novoHandState.GotCards && handState!=novoHandState.ReplacedCards)|| !isValidBet"
+                            (clicked)="drop()" />
+                    </div>
+
+                    <div *ngIf="handState==novoHandState.Bet && !isQualified" [style.margin-top.px]="30"
+                        class="d-flex ai-top jc-space-around">
+                        <app-rectangle-btn [label]="'Get Ante'" [disabled]="false" (clicked)="getAnte()" />
+                        <app-rectangle-btn [label]="'Dealer Card'" [disabled]="false" (clicked)="dealerCard()" />
+                    </div>
+                </div>
+
+                <div class="payout-board" [style.height.px]="435" [style.width.px]="410" [style.margin-top.px]="10">
+                    <div [style.margin-top.px]="10" class="d-flex ai-end jc-space-around">
+                        <div>
+                            <p class="name">Iterations</p>
+                            <input type="number" [formControl]="iteration" min="0" [readonly]="isRunning" />
+                        </div>
+
+                        <div>
+                            <app-rectangle-btn [label]="'Start'" [disabled]="isRunning || this.iteration.value==0"
+                                (clicked)="start()" />
+                        </div>
+
+                    </div>
+
+                    <div class="d-flex ai-center jc-space-btw" [style.margin]="'5px 10px'">
+                        <div class="d-flex ai-center jc-space-btw" [style.width.%]="45">
+                            <p class="balance-style">Qualified</p>
+                            <p class="balance-style">{{qualified}}</p>
+                        </div>
+                        <div class="d-flex ai-center jc-space-btw" [style.width.%]="45">
+                            <p class="balance-style">Not Qualified</p>
+                            <p class="balance-style">{{notQualified}}</p>
+                        </div>
+                    </div>
+
+                    <div *ngFor="let payout of expBonusPayout" class="d-flex ai-center jc-space-btw"
+                        [style.margin]="'5px 10px'">
+                        <p class="balance-style" [style.width.%]="50">{{payout.handName}}</p>
+                        <p class="balance-style right-text" [style.width.%]="25">{{payout.appearance}}</p>
+                        <p class="balance-style right-text" [style.width.%]="25">
+                            {{payout.appearance*payout.payoutFactor}}</p>
+                    </div>
+
+                    <div class="d-flex ai-center jc-space-btw" [style.margin]="'5px 10px'">
+                        <p class="balance-style" [style.width.%]="50">Total</p>
+                        <p class="balance-style right-text" [style.width.%]="25">{{totalBonusHands}}</p>
+                        <p class="balance-style right-text" [style.width.%]="25">{{totalBonusProfit}}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="center" [style.margin-top.px]="80" [style.width.%]="40">
+                <app-get-number *ngIf="maxInsurance" [name]="'Insurance'" [showControls]="true" [(value)]="insurance"
+                    (valueChange)="checkInsurance()" />
+                <div *ngIf="!maxInsurance" [style.width.px]="100" [style.height.px]="72"></div>
+
+                <div class="d-flex ai-top jc-space-around">
+                    <app-get-number [style.width.%]="40" [name]="'Dealer Bonus'"
+                        [showControls]="handState==novoHandState.NotStarted" [(value)]="dealerBonus"
+                        (valueChange)="setValidation()" />
+                    <app-get-number [style.width.%]="20" [name]="'Ante'"
+                        [showControls]="handState==novoHandState.NotStarted" [(value)]="ante"
+                        (valueChange)="setValidation()" />
+                    <app-get-number [style.width.%]="40" [name]="'Express Bonus'"
+                        [showControls]="handState==novoHandState.NotStarted" [(value)]="expressBonus"
+                        (valueChange)="setValidation()" />
+                </div>
+                <app-get-number [name]="'Bet'" [showControls]="false" [(value)]="bet" />
+
+                <div class="center" [style.margin-top.px]="50">
+                    <p class="title">Player Hand</p>
+                    <div class="d-flex ai-center jc-space-btw" [style.margin]="'auto'">
+                        <div *ngFor="let card of playerCards">
+                            <app-display-card [card]="card" (click)="chooseCard(card)" />
+                        </div>
+                    </div>
+                    <p class="title">&nbsp;<span *ngIf="playerHandDescription">{{playerHandDescription}}</span>&nbsp;
+                    </p>
+
+                    <div [style.margin-top.px]="15" class="d-flex ai-top jc-space-around">
+                        <app-rectangle-btn [label]="'One Card'"
+                            [disabled]="handState!=novoHandState.GotCards || isCardsChosen" (clicked)="getOneCard()" />
+                        <app-rectangle-btn [label]="'Replace'"
+                            [disabled]="handState!=novoHandState.GotCards || !isCardsChosen"
+                            (clicked)="replaceCard()" />
+                    </div>
+                </div>
+            </div>
+
+            <div [style.width.%]="30">
+                <div class="payout-board" [style.height.px]="600" [style.width.px]="410" [style.margin-top.px]="10">
+                    <p class="title center red">Hand Summary</p>
+
+                    <div class="d-flex ai-center jc-space-btw" [style.margin]="'0px 10px'">
+                        <p class="balance-style">Total Bet</p>
+                        <p class="balance-style">{{totalBet}}</p>
+                    </div>
+
+                    <div class="d-flex ai-center jc-space-btw" [style.margin]="'0px 10px'">
+                        <p class="balance-style">Total Profit</p>
+                        <p class="balance-style">{{handProfit}}</p>
+                    </div>
+
+                    <div class="d-flex ai-center jc-space-btw" [style.margin]="'5px 10px 0px'">
+                        <p class="balance-style">Player Express Bonus</p>
+                        <p class="balance-style">{{expressBonusHand?.handDescription}}</p>
+                    </div>
+
+                    <div class="d-flex ai-center jc-space-btw" [style.margin]="'0px 10px'"
+                        [class.red]="expressBonusProfit<0" [class.green]="expressBonusProfit>0"
+                        [class.blue]="expressBonusProfit==0">
+                        <p class="balance-style">Express Bonus Profit</p>
+                        <p class="balance-style">{{expressBonusProfit}}</p>
+                    </div>
+
+                    <div class="d-flex ai-center jc-space-btw" [style.margin]="'5px 10px 0px'">
+                        <p class="balance-style">Dealer Express Bonus</p>
+                        <p class="balance-style">{{dealerBonusHand?.handDescription}}</p>
+                    </div>
+
+                    <div class="d-flex ai-center jc-space-btw" [style.margin]="'0px 10px'"
+                        [class.red]="dealerBonusProfit<0" [class.green]="dealerBonusProfit>0"
+                        [class.blue]="dealerBonusProfit==0">
+                        <p class="balance-style">Dealer Bonus Profit</p>
+                        <p class="balance-style">{{dealerBonusProfit}}</p>
+                    </div>
+
+                    <div class="d-flex ai-center jc-space-btw" [style.margin]="'5px 10px 0px'">
+                        <p class="balance-style">Expexted Profit</p>
+                        <p class="balance-style">{{expectedProfit}}</p>
+                    </div>
+
+                    <div class="d-flex ai-center jc-space-btw" [style.margin]="'0px 10px'">
+                        <p class="balance-style">Max Insurance</p>
+                        <p class="balance-style">{{maxInsurance}}</p>
+                    </div>
+
+                    <div class="d-flex ai-center jc-space-btw" [style.margin]="'5px 10px 0px'">
+                        <p class="balance-style">Hand Resault</p>
+
+                        <div *ngIf="presentResults">
+                            <p *ngIf="handResult==HandResult.PlayerWin" class="balance-style green">Player Hand
+                                Won !</p>
+                            <p *ngIf="handResult==HandResult.PlayerLoss" class="balance-style red">Player Hand
+                                Lost !</p>
+                            <p *ngIf="handResult==HandResult.Tie" class="balance-style blue">Push !</p>
+                            <p *ngIf="handResult==HandResult.NotQulified" class="balance-style blue">Not Qulified !</p>
+                        </div>
+                    </div>
+
+                    <p class="title center red">Totals</p>
+                    <div class="d-flex ai-center jc-space-btw" [style.margin]="'0px 10px'"
+                        [class.red]="expressBonusBalance<0" [class.green]="expressBonusBalance>0"
+                        [class.blue]="expressBonusBalance==0">
+                        <p class="balance-style">Total Player Express Bonus</p>
+                        <p class="balance-style">{{expressBonusBalance}}</p>
+                    </div>
+
+                    <div class="d-flex ai-center jc-space-btw" [style.margin]="'0px 10px'"
+                        [class.red]="dealerBonusBalance<0" [class.green]="dealerBonusBalance>0"
+                        [class.blue]="dealerBonusBalance==0">
+                        <p class="balance-style">Total Player Express Bonus</p>
+                        <p class="balance-style">{{dealerBonusBalance}}</p>
+                    </div>
+
+                    <div class="d-flex ai-center jc-space-btw" [style.margin]="'0px 10px'">
+                        <p class="balance-style">Total Insurance</p>
+                        <p class="balance-style">{{insuranaceBalance}}</p>
+                    </div>
+
+                    <div class="d-flex ai-center jc-space-btw" [style.margin]="'0px 10px'">
+                        <p class="balance-style">Total Replacement</p>
+                        <p class="balance-style">{{totalReplacment}}</p>
+                    </div>
+
+                    <div class="d-flex ai-center jc-space-btw" [style.margin]="'0px 10px'" [class.red]="totalBalance<0"
+                        [class.green]="totalBalance>0" [class.blue]="totalBalance==0">
+                        <p class="balance-style">Total Balance</p>
+                        <p class="balance-style">{{totalBalance}}</p>
+                    </div>
+
+                    <div class="d-flex ai-center jc-space-btw" [style.margin]="'5px 10px 0px'">
+                        <p class="balance-style">Total Wins</p>
+                        <p class="balance-style">{{totalWins}}</p>
+                    </div>
+
+                    <div class="d-flex ai-center jc-space-btw" [style.margin]="'0px 10px'">
+                        <p class="balance-style">Total Losses</p>
+                        <p class="balance-style">{{totalLosses}}</p>
+                    </div>
+
+                    <div class="d-flex ai-center jc-space-btw" [style.margin]="'0px 10px'">
+                        <p class="balance-style">Total Ties</p>
+                        <p class="balance-style">{{totalTies}}</p>
+                    </div>
+
+                    <div class="d-flex ai-center jc-space-btw" [style.margin]="'0px 10px'">
+                        <p class="balance-style">Total Not Qualified</p>
+                        <p class="balance-style">{{totalNotQualified}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

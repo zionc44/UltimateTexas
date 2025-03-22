@@ -1,4 +1,4 @@
-import { Hand, HandRank, HandResult } from "./calc-hand.function";
+import { ExpressBonusHand, ExpressBonusRank, Hand, HandRank, HandResult } from "./calc-hand.function";
 import { Card } from "./card.interfcae";
 
 
@@ -46,12 +46,38 @@ export function getHandName(handRank: HandRank): string {
 }
 
 export interface Payout {
-    handRank: HandRank;
+    handRank: HandRank | ExpressBonusRank;
     handName: string;
     payoutFactor: number;
     payoutString: string;
     appearance: number;
 }
+
+export const NovoPayout: Payout[] = [
+    { handRank: HandRank.RoyalFlush, handName: "Royal Flush", payoutFactor: 100, payoutString: "100 to 1", appearance: 0 },
+    { handRank: HandRank.StraightFlush, handName: "Straight Flush", payoutFactor: 50, payoutString: "50 to 1", appearance: 0 },
+    { handRank: HandRank.Quads, handName: "Four Of A Kind", payoutFactor: 20, payoutString: "20 to 1", appearance: 0 },
+    { handRank: HandRank.FullHouse, handName: "Full House", payoutFactor: 7, payoutString: "7 to 1", appearance: 0 },
+    { handRank: HandRank.Flush, handName: "Flush", payoutFactor: 5, payoutString: "5 to 1", appearance: 0 },
+    { handRank: HandRank.Straight, handName: "Straight", payoutFactor: 4, payoutString: "4 to 1", appearance: 0 },
+    { handRank: HandRank.Trips, handName: "Three Of A Kind", payoutFactor: 3, payoutString: "3 to 1", appearance: 0 },
+    { handRank: HandRank.TwoPairs, handName: "Two Pair", payoutFactor: 2, payoutString: "2 to 1", appearance: 0 },
+    { handRank: HandRank.Pair, handName: "One Pair", payoutFactor: 1, payoutString: "1 to 1", appearance: 0 },
+    { handRank: HandRank.HighCard, handName: "Ace - King", payoutFactor: 1, payoutString: "1 to 1", appearance: 0 },
+]
+
+export const ExpressBonusPayout: Payout[] = [
+    { handRank: ExpressBonusRank.RoyalFlush, handName: getHandName(HandRank.RoyalFlush), payoutFactor: 500, payoutString: "500 to 1", appearance: 0 },
+    { handRank: ExpressBonusRank.StraightFlush, handName: getHandName(HandRank.StraightFlush), payoutFactor: 250, payoutString: "250 to 1", appearance: 0 },
+    { handRank: ExpressBonusRank.Quads, handName: getHandName(HandRank.Quads), payoutFactor: 200, payoutString: "200 to 1", appearance: 0 },
+    { handRank: ExpressBonusRank.FivePictureCards, handName: "Five Picture Cards", payoutFactor: 120, payoutString: "120 to 1", appearance: 0 },
+    { handRank: ExpressBonusRank.FullHouse, handName: getHandName(HandRank.FullHouse), payoutFactor: 100, payoutString: "100 to 1", appearance: 0 },
+    { handRank: ExpressBonusRank.Flush, handName: getHandName(HandRank.Flush), payoutFactor: 60, payoutString: "60 to 1", appearance: 0 },
+    { handRank: ExpressBonusRank.Straight, handName: getHandName(HandRank.Straight), payoutFactor: 30, payoutString: "30 to 1", appearance: 0 },
+    { handRank: ExpressBonusRank.TreeOfKing, handName: getHandName(HandRank.Trips), payoutFactor: 8, payoutString: "8 to 1", appearance: 0 },
+    { handRank: ExpressBonusRank.AceKingQueen, handName: "Ace - King - Queen", payoutFactor: 5, payoutString: "5 to 1", appearance: 0 },
+    { handRank: ExpressBonusRank.FiveCradSameColor, handName: "Five Cards Same Color", payoutFactor: 2, payoutString: "2 to 1", appearance: 0 },
+]
 
 export const TripsPayout: Payout[] = [
     { handRank: HandRank.RoyalFlush, handName: getHandName(HandRank.RoyalFlush), payoutFactor: 50, payoutString: "50 to 1", appearance: 0 },
@@ -149,6 +175,14 @@ export interface DealerVsPlayer {
     communityCards: Card[],
     dealerHand: Hand,
     playerHand: Hand,
+}
+
+export interface NovoIteration {
+    ante: number,
+    expressBonus: number,
+    dealerBonus: number,
+    bet: number,
+    insurance: number
 }
 
 export function INIT_PlayerSpot(): PlayerSpot {
