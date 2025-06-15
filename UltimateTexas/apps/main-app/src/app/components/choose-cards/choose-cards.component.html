@@ -1,0 +1,36 @@
+<div class="pop-up-container">
+    <p class="pop-up-title"> {{title}} </p>
+
+
+    <div *ngIf="!isDataReady" [style.text-align]="'center'">
+        <app-rectangle-btn [label]="'OK'" [disabled]="false" (clicked)="onOk()" />
+    </div>
+
+    <div *ngIf="isDataReady">
+        <div *ngFor="let suit of [].constructor(4); let i = index">
+            <div class="d-flex jc-start ai-center">
+                <div *ngFor="let value of [].constructor(13); let j = index">
+                    <div [style.margin.px]="8"
+                        [style.cursor]="allCards[(i*13)+j].isOpen && (chosenCards.length<numOfCards)?  'pointer' : 'not-allowed'"
+                        (click)="onCardClicked((i*13)+j)">
+                        <app-display-card [card]="allCards[(i*13)+j]" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <p class="pop-up-title" [style.margin-top.px]="10"> The chosen cards are: </p>
+        <div class="d-flex jc-start ai-center" [style.height.px]="140">
+            <div *ngFor="let card of chosenCards; let i=index">
+                <div [style.margin.px]="8" [style.cursor]="'pointer'" (click)="onDechooseCard(i)">
+                    <app-display-card [card]="card" />
+                </div>
+            </div>
+        </div>
+
+        <div [style.text-align]="'center'">
+            <app-rectangle-btn [label]="'Done'" [disabled]="this.chosenCards.length<this.numOfCards"
+                (clicked)="done()" />
+        </div>
+    </div>
+</div>

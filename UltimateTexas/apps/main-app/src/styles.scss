@@ -210,3 +210,76 @@ input:read-only {
     font-size: 14px;
     font-weight: bold;
 }
+
+.tep-button {
+    width: 145px;
+    height: 40px;
+    border: 1px solid #10437c;
+    border-radius: 5px;
+    outline: none;
+    background: white;
+    color: #10437c;
+    font-size: 16px;
+    cursor: pointer;
+    box-shadow: 0 0 8px -1px gray;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 10px;
+}
+
+.tep-tab-button {
+    width: 200px;
+    height: 20px;
+    font-weight: 500;
+    font-size: 16px;
+    border: none;
+    border-bottom: 2px solid #C3CFE7;
+    background: none;
+    color: #0c3058;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.tep-tab-button-active {
+    border-bottom: 2px solid #0058ba;
+    font-weight: bold;
+}
+
+.img {
+    width: 40px;
+}
+
+.negative {
+    background: #10437c;
+    color: white;
+}
+
+.tep-button.negative:hover {
+    border: 2px solid white;
+    color: white;
+    font-weight: 600;
+}
+
+.tep-button:hover {
+    border: 2px solid #0058ba;
+    color: #0058ba;
+    font-weight: 600;
+}
+
+.tep-button:active {
+    box-shadow: none;
+}
+
+.button-img {
+    margin-left: 15px;
+}
+
+button[disabled] {
+    border: #ccc;
+    background-color: #ccc;
+    cursor: not-allowed;
+    pointer-events: none;
+  }

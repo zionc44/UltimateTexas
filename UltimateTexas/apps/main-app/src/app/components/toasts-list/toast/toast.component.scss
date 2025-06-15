@@ -1,0 +1,49 @@
+.toast-wrapper {
+    border-radius: .375rem;
+    box-shadow:  0 .5rem 1rem #00000026;
+    border: 1px solid;
+    background: #daf2da;
+    display: flex;
+    justify-content: space-between;
+    margin: 10px;
+    opacity: 1;
+}
+
+
+.toast-wrapper:hover {
+    transform: translateY(-4px);
+    box-shadow: 0px 0px 12px 7px  #00000026;
+}
+
+.toast-wrapper tep-client-toast-img-by-severity, .toast-wrapper tep-client-toast-close-img  { 
+    height: 25px;
+    width: 25px;
+    margin: 5px;
+}
+
+.toast-title {
+    margin: 4px 0;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.toast-text {
+    margin: 0;
+    font-size: 14px;
+    block-size: 21px;
+}
+
+.fade-out {
+    opacity: 0;
+    animation-name: fade-out-state;
+    animation-duration: 750ms;
+}
+
+@keyframes fade-out-state {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}

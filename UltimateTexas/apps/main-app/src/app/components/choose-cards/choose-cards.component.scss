@@ -1,0 +1,31 @@
+.pop-up-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+    z-index: 1000001;
+    margin: 20px;
+}
+
+.pop-up-title {
+    font-size: 24px;
+    font-weight: 400;
+    color: #0b4882;
+    margin: 0;
+}
+
+.pop-up-message {
+    font-size: 16px;
+    font-weight: 400;
+    color: #10437c;
+    padding: 5px ;
+    margin: 0;
+}
+
+
+.pop-up-wrapper button{
+    width: 80px;
+    margin: 50px auto;
+}

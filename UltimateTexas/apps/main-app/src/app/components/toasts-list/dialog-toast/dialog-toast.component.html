@@ -1,0 +1,18 @@
+<div *ngIf="toast" class="toast-dialog-container">
+    <div class="toast-wrapper" [style.width.px]="toast.width" [style.height.px]="toast.height">
+
+        <ng-container *ngIf="toast.component" #componentContainer />
+
+        <div *ngIf="!toast.component">
+            <p class="toast-message">
+                {{toast.toastTitle}}
+            </p>
+
+            <div class="d-flex jc-space-around" [style.margin-top.px]="40">
+                <button *ngFor="let btn of toast.btnDialogList; let i=index" class="tep-button"
+                    [class.negative]="btn.isNegativeStyle" (click)="onBtnClick(btn)"
+                    [style.width.px]="btn.btnWidth">{{btn.btnName}}</button>
+            </div>
+        </div>
+    </div>
+</div>

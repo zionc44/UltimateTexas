@@ -151,6 +151,7 @@ export class NovoPokerComponent {
         handFactor++;
       } else {
         this.playerHandDescription = "Ace - King"
+        handFactor = 1;
       }
     }
 

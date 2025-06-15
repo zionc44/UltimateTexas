@@ -1,0 +1,12 @@
+<div class="toasts-container d-flex jc-space-btw">
+     <button *ngIf="toastsList.length>1" class="tep-button negative" (click)="closeAll()">סגור הכול</button>
+     <div class="toasts-list">
+          <ng-container *ngFor="let taost of toastsList; let i=index">
+               <tep-client-toast [toast]="taost" (dismistEvent)="dismist($event,i)" />
+          </ng-container>
+     </div>
+</div>
+
+<ng-container *ngFor="let dialogToast of dialogtToastsList; let i=index">
+     <tep-client-dialog-toast [toast]="dialogToast" (closeDialog)="closeDialog()" />
+</ng-container>

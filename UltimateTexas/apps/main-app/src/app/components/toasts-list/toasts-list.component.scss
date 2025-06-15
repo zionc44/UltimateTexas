@@ -1,0 +1,19 @@
+.toasts-container {
+    position: absolute;
+    bottom: 55px;
+    left: 10px;
+    z-index: 100000;
+    max-height: 710px;
+}
+
+.toasts-list {
+    max-height: 100%;
+    overflow: auto;
+}
+
+.toasts-container .tep-button {
+    writing-mode: vertical-rl;
+    width: 40px;
+    align-items: center;
+    height: unset;
+}

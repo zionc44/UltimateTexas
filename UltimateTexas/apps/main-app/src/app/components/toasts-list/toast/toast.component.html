@@ -1,0 +1,13 @@
+<div class="toast-wrapper" [class.fade-out]="fadeOutInd" [style.color]="getToastColor()"
+    [style.min-width.px]="toast.width? toast.width : 400" [style.background]="getToastBackgroundColor()"
+    [style.border-color]="getToastColor()">
+
+    <tep-client-toast-img-by-severity [toastType]="toast.toastType" />
+
+    <div [style.width.%]="100">
+        <p *ngIf="toast.toastTitle" class="toast-title">{{toast.toastTitle}}</p>
+        <p *ngFor="let toastText of toast.toastTexts" class="toast-text">{{toastText}}</p>
+    </div>
+
+    <tep-client-toast-close-img [style.cursor]="'pointer'" [color]="getToastColor()" (click)="dismist()" />
+</div>

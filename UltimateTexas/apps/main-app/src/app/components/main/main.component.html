@@ -73,6 +73,10 @@
 
         <div>
             <div [style.margin.px]="20">
+                <app-rectangle-btn [label]="isTestMode? 'Play Mode': 'Test Mode'"
+                    [disabled]="handStage !== HandState.NotStarted" (clicked)="testModeToggle()" />
+            </div>
+            <div [style.margin.px]="20">
                 <app-rectangle-btn [label]="'Go To Batch'" [disabled]="handStage !== HandState.NotStarted"
                     (clicked)="batch()" />
             </div>

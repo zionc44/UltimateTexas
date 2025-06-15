@@ -20,6 +20,7 @@ export class GetCardesService {
       while (this.cradsPack[card]) {
         card = Math.floor(Math.random() * 52);
       }
+
       this.cradsPack[card] = true;
       this.numOfCards++;
       return this.getCard(card, isOpen);
@@ -32,7 +33,7 @@ export class GetCardesService {
     this.cradsPack = Array(52).fill(false);
   }
 
-  private getCard(cardIndex: number, isOpen: boolean): Card {
+  public getCard(cardIndex: number, isOpen: boolean): Card {
     return {
       cardIndex: cardIndex,
       cardSign: this.getCardSign(Math.floor(cardIndex / 13)),
@@ -52,5 +53,19 @@ export class GetCardesService {
       default:
         return CardSign.SPADE;
     }
+  }
+
+  getAllCards() {
+    let allCards: Card[] = []
+
+    this.cradsPack.forEach((used: boolean, index: number) => {
+      allCards.push(this.getCard(index, !used))
+    })
+
+    return allCards;
+  }
+  public markCardAsUsed(cardIndex: number) {
+    this.cradsPack[cardIndex] = true;
+    this.numOfCards++;
   }
 }
