@@ -84,8 +84,8 @@ export const TripsPayout: Payout[] = [
     { handRank: HandRank.StraightFlush, handName: getHandName(HandRank.StraightFlush), payoutFactor: 40, payoutString: "40 to 1", appearance: 0 },
     { handRank: HandRank.Quads, handName: getHandName(HandRank.Quads), payoutFactor: 30, payoutString: "30 to 1", appearance: 0 },
     { handRank: HandRank.FullHouse, handName: getHandName(HandRank.FullHouse), payoutFactor: 8, payoutString: "8 to 1", appearance: 0 },
-    { handRank: HandRank.Flush, handName: getHandName(HandRank.Flush), payoutFactor: 7, payoutString: "7 to 1", appearance: 0 },
-    { handRank: HandRank.Straight, handName: getHandName(HandRank.Straight), payoutFactor: 4, payoutString: "4 to 1", appearance: 0 },
+    { handRank: HandRank.Flush, handName: getHandName(HandRank.Flush), payoutFactor: 6, payoutString: "6 to 1", appearance: 0 },
+    { handRank: HandRank.Straight, handName: getHandName(HandRank.Straight), payoutFactor: 5, payoutString: "5 to 1", appearance: 0 },
     { handRank: HandRank.Trips, handName: getHandName(HandRank.Trips), payoutFactor: 3, payoutString: "3 to 1", appearance: 0 },
 ]
 
